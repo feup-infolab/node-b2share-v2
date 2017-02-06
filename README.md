@@ -19,7 +19,7 @@ npm install node-b2share-v2
 ## Use in your project (FIXME)
 
 ```javascript
-var B2ShareClient = require(’node-b2share-v2’);
+var B2ShareClient = require('node-b2share-v2');
 
 var client = new B2ShareClient(url, access_token…) 
 
