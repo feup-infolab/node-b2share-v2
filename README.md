@@ -12,7 +12,7 @@ Developed in the context of the (https://eudat.eu/communities/eudat-as-a-long-te
 
 ## Install
 
-```
+```bash
 npm install node-b2share-v2
 ```
 
