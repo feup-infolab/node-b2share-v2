@@ -10,7 +10,7 @@ Developed in the context of the (https://eudat.eu/communities/eudat-as-a-long-te
 
 # Usage
 
-## Install using (https://www.npmjs.com/)[npm]:
+## Install
 
 ```
 npm install node-b2share-v2
