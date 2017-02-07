@@ -1,0 +1,23 @@
+{
+  "name": "node-b2share-v2",
+  "version": "1.0.0",
+  "description": "(Under construction)",
+  "main": "node-b2share-v2.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/feup-infolab/node-b2share-v2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/feup-infolab/node-b2share-v2/issues"
+  },
+  "homepage": "https://github.com/feup-infolab/node-b2share-v2#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
+}
