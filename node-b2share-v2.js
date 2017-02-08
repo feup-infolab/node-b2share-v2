@@ -14,19 +14,14 @@ B2ShareClient.prototype.listCommunities = function (callback) {
       method: 'GET'
     };
 
-    console.log('params: ', params);
-
     var body = '';
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
-            console.log('on data');
            body += chunk;
         });
 
         response.on('end', function () {
-            console.log('the body is:');
-            console.log(body);
-            callback(false, body);
+            callback(false, JSON.parse(body));
         });
     });
 
@@ -54,9 +49,7 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
         });
 
         response.on('end', function () {
-            console.log('the body is:');
-            console.log(body);
-            callback(false, body);
+            callback(false, JSON.parse(body));
         });
     });
 
@@ -84,9 +77,7 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
         });
 
         response.on('end', function () {
-            console.log('the body is:');
-            console.log(body);
-            callback(false, body);
+            callback(false, JSON.parse(body));
         });
     });
 
@@ -100,9 +91,9 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
 };
 
 B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callback) {
-    /*var params = {
+    var params = {
         host: this.host,
-        path: '/api/records/?q=community:COMMUNITY_ID' + this.access_token,
+        path: '/api/records/?q=community:' + communityID + '?access_token=' + this.access_token,
         method: 'GET'
     };
 
@@ -113,9 +104,7 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
         });
 
         response.on('end', function () {
-            console.log('the body is:');
-            console.log(body);
-            callback(false, body);
+            callback(false, JSON.parse(body));
         });
     });
 
@@ -126,7 +115,33 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
     });
 
     req.end();
-    */
+};
+
+B2ShareClient.prototype.searchRecords = function (queryString, callback) {
+    var params = {
+        host: this.host,
+        path: '/api/records/?q=' + queryString + '?access_token=' + this.access_token,
+        method: 'GET'
+    };
+
+    var body = '';
+    var req = https.request(params, function (response) {
+        response.on('data', function (chunk) {
+            body += chunk;
+        });
+
+        response.on('end', function () {
+            callback(false, JSON.parse(body));
+        });
+    });
+
+    req.on('error', function (e) {
+        var errorMsg = 'Error getting all records';
+        console.log(e);
+        callback(true, errorMsg);
+    });
+
+    req.end();
 };
 
 
