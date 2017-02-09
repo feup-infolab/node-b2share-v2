@@ -21,6 +21,7 @@ B2ShareClient.prototype.listCommunities = function (callback) {
         });
 
         response.on('end', function () {
+            console.log(response);
             callback(false, JSON.parse(body));
         });
     });
@@ -293,8 +294,105 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callb
 */
 
 
-B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callback) {
+B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callback) {
+    var params = {
+        host: this.host,
+        path: '/api/files/' +  fileBucketID + '?access_token=' + this.access_token,
+        method: 'GET'
+    };
 
+    var body = '';
+    var req = https.request(params, function (response) {
+        response.on('data', function (chunk) {
+            body += chunk;
+        });
+
+        response.on('end', function () {
+            console.log('statusCode:', response.statusCode);
+            var result;
+            if(response.statusCode == '200')
+            {
+                result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage,
+                    "data": JSON.parse(body)
+                };
+            }
+            else
+            {
+                result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage,
+                };
+            }
+            callback(false, result);
+        });
+    });
+
+    req.on('error', function (e) {
+        var errorMsg = 'Error getting specific record';
+        console.log(e);
+        callback(true, errorMsg);
+    });
+
+    req.end();
+};
+
+B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatchFormatData, callback) {
+    var params = {
+        host: this.host,
+        path: '/api/records/' +  recordID + '/draft?access_token=' + this.access_token,
+        headers: {
+            'content-type': 'application/json-patch+json',
+        },
+        //body: jsonPatchFormatData,
+        json: true,
+        method: 'PATCH'
+    };
+
+    var body = '';
+    var req = https.request(params, function (response) {
+        response.on('data', function (chunk) {
+            body += chunk;
+        });
+
+        response.on('end', function () {
+            console.log('statusCode:', response.statusCode);
+            var result;
+            if(response.statusCode == '200')
+            {
+                result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage,
+                    "data": JSON.parse(body)
+                };
+            }
+            else
+            {
+                result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage,
+                };
+            }
+            callback(false, result);
+        });
+    });
+
+    req.on('error', function (e) {
+        var errorMsg = 'Error updating a specific draft';
+        console.log(e);
+        callback(true, errorMsg);
+    });
+
+    req.write(JSON.stringify(jsonPatchFormatData));
+    req.end();
+};
+
+B2ShareClient.prototype.submitDraftRecordForPublication= function (recordID, callback) {
+    var jsonPatchFormatData = [{"op": "add", "path":"/publication_state", "value": "submitted"}];
+    this.updateDraftRecordMetadata(recordID, jsonPatchFormatData, function (error, body) {
+       callback(error, body);
+    });
 };
 
 module.exports = B2ShareClient;

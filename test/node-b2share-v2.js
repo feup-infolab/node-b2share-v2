@@ -1921,6 +1921,7 @@ describe('#B2ShareClient', function () {
 
     });
 
+    /*
     it('uploadFileIntoDraftRecord with success', function (done) {
         var expectedStatusCode = '201';
         var buffer = [];
@@ -1934,6 +1935,49 @@ describe('#B2ShareClient', function () {
                     done();
                 }, done);
             },done);
+        });
+
+    });
+    */
+
+    it('listUploadedFilesInRecord with success', function (done) {
+        var expectedStatusCode = '200';
+        var buffer = [];
+        assert.doesNotThrow(function () {
+            var fileBucketID = '48eb8716-4ddd-4794-9a6f-1d143b6d7f2d';
+            client.listUploadedFilesInRecord(fileBucketID, function (err, body) {
+                assert.equal(body.statusCode, expectedStatusCode);
+                done();
+            }, done);
+        });
+
+    });
+
+    it('updateDraftRecordMetadata with success', function (done) {
+        var expectedStatusCode = '200';
+        var recordID = '3e9b616937034495aa9ff220650714f4';
+        var jsonPatchFormatData = [
+            { "op": "replace", "path": "/titles/0/title", "value": "THIS is the changed title" }
+        ];
+
+        assert.doesNotThrow(function () {
+            client.updateDraftRecordMetadata(recordID, jsonPatchFormatData, function (err, body) {
+                assert.equal(body.statusCode, expectedStatusCode);
+                done();
+            }, done);
+        });
+
+    });
+
+    it('submitDraftRecordForPublication with success', function (done) {
+        var expectedStatusCode = '200';
+        var recordID = '3e9b616937034495aa9ff220650714f4';
+
+        assert.doesNotThrow(function () {
+            client.submitDraftRecordForPublication(recordID, function (err, body) {
+                assert.equal(body.statusCode, expectedStatusCode);
+                done();
+            }, done);
         });
 
     });
