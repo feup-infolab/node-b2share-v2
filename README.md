@@ -6,7 +6,7 @@
 
 This is a JavaScript wrapper for the EUDAT B2Share V2 API.
 
-Developed in the context of the (https://eudat.eu/communities/eudat-as-a-long-term-repository-for-the-university-of-porto)[DataPublicatio@UPorto data pilot], it supports the (B2Share V2 API) [https://trng-b2share.eudat.eu/help/api].
+Developed in the context of the [DataPublicatio@UPorto data pilot](https://eudat.eu/communities/eudat-as-a-long-term-repository-for-the-university-of-porto), it supports the [B2Share V2 API](https://trng-b2share.eudat.eu/help/api).
 
 # Usage
 
