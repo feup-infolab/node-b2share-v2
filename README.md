@@ -1,6 +1,6 @@
 # node-b2share-v2
 
-(Under construction)
+[![Build Status](https://travis-ci.org/feup-infolab/node-b2share-v2.svg?branch=master)](https://travis-ci.org/feup-infolab/node-b2share-v2)
 
 # What is this?
 
