@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/feup-infolab/node-b2share-v2.svg?branch=master)](https://travis-ci.org/feup-infolab/node-b2share-v2)
 
+[![Coverage Status](https://coveralls.io/repos/github/feup-infolab/node-b2share-v2/badge.svg?branch=master)](https://coveralls.io/github/feup-infolab/node-b2share-v2?branch=master)
+
 # What is this?
 
 This is a JavaScript wrapper for the EUDAT B2Share V2 API.
