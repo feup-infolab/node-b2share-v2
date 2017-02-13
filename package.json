@@ -18,7 +18,10 @@
   "homepage": "https://github.com/feup-infolab/node-b2share-v2#readme",
   "devDependencies": {
     "chai": "^3.5.0",
+    "coveralls": "^2.11.16",
+    "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
+    "mocha-lcov-reporter": "^1.2.0",
     "stream-to-array": "^2.3.0"
   }
 }
