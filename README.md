@@ -1,5 +1,9 @@
 # node-b2share-v2
 
+Build Status             |  Coverage Status
+:-------------------------:|:-------------------------:
+[![Build Status](https://travis-ci.org/feup-infolab/node-b2share-v2.svg?branch=master)](https://travis-ci.org/feup-infolab/node-b2share-v2)  |  [![Coverage Status](https://coveralls.io/repos/github/feup-infolab/node-b2share-v2/badge.svg?branch=master)](https://coveralls.io/github/feup-infolab/node-b2share-v2?branch=master)
+
 [![Build Status](https://travis-ci.org/feup-infolab/node-b2share-v2.svg?branch=master)](https://travis-ci.org/feup-infolab/node-b2share-v2)
 
 [![Coverage Status](https://coveralls.io/repos/github/feup-infolab/node-b2share-v2/badge.svg?branch=master)](https://coveralls.io/github/feup-infolab/node-b2share-v2?branch=master)
