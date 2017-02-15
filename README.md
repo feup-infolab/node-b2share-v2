@@ -1,6 +1,6 @@
 # node-b2share-v2
 
-[![Build Status](https://travis-ci.org/feup-infolab/node-b2share-v2.svg?branch=master)](https://travis-ci.org/feup-infolab/node-b2share-v2) [![Coverage Status](https://coveralls.io/repos/github/feup-infolab/node-b2share-v2/badge.svg?branch=master)](https://coveralls.io/github/feup-infolab/node-b2share-v2?branch=master)
+[![Build Status](https://travis-ci.org/feup-infolab/node-b2share-v2.svg?branch=master)](https://travis-ci.org/feup-infolab/node-b2share-v2) [![Coverage Status](https://coveralls.io/repos/github/feup-infolab/node-b2share-v2/badge.svg?branch=master)](https://coveralls.io/github/feup-infolab/node-b2share-v2?branch=master) (**The build may be in "failiing" status due to temporary downtime of the B2Share Training Website at the time of the CI Build. This server is used to simulate the API requests and test the client. Do not worry, as this is normal.).
 
 # What is this?
 
