@@ -12,12 +12,12 @@ describe('#B2ShareClient', function () {
     var bucketIDForUploadTest;
     before(function () {
         var host = 'trng-b2share.eudat.eu';
-        var accessTokens = 'YeuejKbcfPIxIQ6czD04j3wUS8HErWX5ilXgMpOlga8ONtDz57Rf6WlzHyPO';
+        var accessTokens = 'wkSKA2raCpXfqlIqNX9sH0StCC3MIkJFnescG2R6LhsXMnK2N8XNkzRqFI7I';
         client = new B2ShareClient(host, accessTokens);
     });
     it('listCommunities with success', function (done) {
         var expectedStatusCode = '200';
-
+        this.timeout(2000000);
 
         assert.doesNotThrow(function () {
             client.listCommunities(function (err, body) {
@@ -29,8 +29,8 @@ describe('#B2ShareClient', function () {
     });
 
     it('getCommunitySchema with success', function (done) {
-
         var expectedStatusCode = '200';
+        this.timeout(2000000);
 
         assert.doesNotThrow(function () {
             var communityID = '0afede87-2bf2-4d89-867e-d2ee57251c62';
@@ -44,7 +44,7 @@ describe('#B2ShareClient', function () {
 
     it('listAllRecords with success', function (done) {
         var expectedStatusCode = '200';
-
+        this.timeout(2000000);
 
         assert.doesNotThrow(function () {
             client.listAllRecords(function (err, body) {
@@ -57,6 +57,7 @@ describe('#B2ShareClient', function () {
 
     it('listRecordsPerCommunity with success', function (done) {
         var expectedStatusCode = '200';
+        this.timeout(2000000);
 
         assert.doesNotThrow(function () {
             var communityID = '0afede87-2bf2-4d89-867e-d2ee57251c62';
@@ -70,6 +71,7 @@ describe('#B2ShareClient', function () {
 
     it('searchRecords with success', function (done) {
         var expectedStatusCode = '200';
+        this.timeout(2000000);
 
         assert.doesNotThrow(function () {
             var queryString = '0afede87-2bf2-4d89-867e-d2ee57251c62';
@@ -83,6 +85,7 @@ describe('#B2ShareClient', function () {
 
     it('searchDrafts with success', function (done) {
         var expectedStatusCode = '200';
+        this.timeout(2000000);
 
         assert.doesNotThrow(function () {
             client.searchDrafts(function (err, body) {
@@ -95,6 +98,7 @@ describe('#B2ShareClient', function () {
 
     it('getSpecificRecord with success', function (done) {
         var expectedStatusCode = '200';
+        this.timeout(2000000);
 
         assert.doesNotThrow(function () {
             var recordID = 'a1c2ef96a1e446fa9bd7a2a46d2242d4';
@@ -107,9 +111,12 @@ describe('#B2ShareClient', function () {
     });
 
     it('createADraftRecord with success', function (done) {
-        var expectedStatusCode = '201';
+        var expectedStatusCode = '200';
+        this.timeout(2000000);
+
         assert.doesNotThrow(function () {
-            var data = {"titles":[{"title":"TestRest"}], "community":"e9b9792e-79fb-4b07-b6b4-b9c2bd06d095", "open_access":true, "community_specific": {}};
+            //var data = {"titles":[{"title":"newCenas"}], "community":"e9b9792e-79fb-4b07-b6b4-b9c2bd06d095", "open_access":true, "community_specific": {}, "publication_state":"draft"};
+            var data = {"titles":[{"title":"newCenas"}], "open_access":true, "community_specific": {}, "publication_state":"draft"};
             client.createADraftRecord(data, function (err, body) {
                 recordIDToUpdate = body.data.id;
                 bucketIDForUploadTest = body.data.links.files;
@@ -121,7 +128,7 @@ describe('#B2ShareClient', function () {
     });
 
     it('uploadFileIntoDraftRecord with success', function (done) {
-        this.timeout(20000);
+        this.timeout(2000000);
         var expectedStatusCode = '200';
         fs.readFile('test/testFile.txt', function (err, data) {
             if(!err)
@@ -144,6 +151,7 @@ describe('#B2ShareClient', function () {
 
     it('listUploadedFilesInRecord with success', function (done) {
         var expectedStatusCode = '200';
+        this.timeout(2000000);
         var buffer = [];
         assert.doesNotThrow(function () {
             var fileBucketID = '48eb8716-4ddd-4794-9a6f-1d143b6d7f2d';
@@ -157,6 +165,7 @@ describe('#B2ShareClient', function () {
 
     it('updateDraftRecordMetadata with success', function (done) {
         var expectedStatusCode = '200';
+        this.timeout(2000000);
         var jsonPatchFormatData = [
             { "op": "replace", "path": "/titles/0/title", "value": "FINAL" }
         ];
@@ -172,6 +181,7 @@ describe('#B2ShareClient', function () {
 
     it('submitDraftRecordForPublication with success', function (done) {
         var expectedStatusCode = '200';
+        this.timeout(2000000);
 
         assert.doesNotThrow(function () {
             client.submitDraftRecordForPublication(recordIDToUpdate, function (err, body) {

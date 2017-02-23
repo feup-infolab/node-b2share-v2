@@ -1,4 +1,5 @@
-var https = require('https');
+//var https = require('https');
+var https = require('follow-redirects').https;
 
 /**
  * Initiates the B2ShareClient
@@ -319,7 +320,7 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
 B2ShareClient.prototype.createADraftRecord = function(data, callback) {
     var params = {
         host: this.host,
-        path: '/api/records/?access_token=' + this.access_token,
+        path: '/api/records?access_token=' + this.access_token,
         headers: {
             'Content-Type': 'application/json'
         },
@@ -337,7 +338,7 @@ B2ShareClient.prototype.createADraftRecord = function(data, callback) {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode == '201')
+            if(response.statusCode == '200')
             {
                 result.data = JSON.parse(body);
             }
