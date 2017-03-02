@@ -18,10 +18,10 @@ npm install node-b2share-v2
 
 ## Use in your project
 
+Warning: Make sure you create the access token for the respective host. For instance if you are interacting with the training url(trng-b2share.eudat.eu), create the access token for this host in https://trng-b2share.eudat.eu/user, if you are using the main url create the token in https://b2share.eudat.eu/user
+
 ```javascript
 var B2ShareClient = require('node-b2share-v2');
-
-Warning: Make sure you create the access token for the respective host. For instance if you are interacting with the training url(trng-b2share.eudat.eu), create the access token for this host in https://trng-b2share.eudat.eu/user, if you are using the main url create the token in https://b2share.eudat.eu/user
 
 /**
  * Initiates the B2ShareClient
