@@ -1,4 +1,3 @@
-//var https = require('https');
 var https = require('follow-redirects').https;
 
 /**
@@ -26,6 +25,7 @@ B2ShareClient.prototype.listCommunities = function (callback) {
     };
 
     var body = '';
+    var hasError = true;
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
            body += chunk;
@@ -39,8 +39,9 @@ B2ShareClient.prototype.listCommunities = function (callback) {
             if(response.statusCode == '200')
             {
                 result.data = JSON.parse(body);
+                hasError = false;
             }
-            callback(false, result);
+            callback(hasError, result);
         });
     });
 
@@ -69,6 +70,7 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
     };
 
     var body = '';
+    var hasError = true;
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
            body += chunk;
@@ -82,8 +84,9 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
             if(response.statusCode =='200')
             {
                 result.data = JSON.parse(body);
+                hasError = false;
             }
-            callback(false, result);
+            callback(hasError, result);
         });
     });
 
@@ -111,6 +114,7 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
     };
 
     var body = '';
+    var hasError = true;
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
             body += chunk;
@@ -124,8 +128,9 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
             if(response.statusCode = '200')
             {
                 result.data = JSON.parse(body);
+                hasError = false;
             }
-            callback(false, result);
+            callback(hasError, result);
         });
     });
 
@@ -154,6 +159,7 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
     };
 
     var body = '';
+    var hasError = true;
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
             body += chunk;
@@ -167,8 +173,9 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
             if(response.statusCode = '200')
             {
                 result.data = JSON.parse(body);
+                hasError = false;
             }
-            callback(false, result);
+            callback(hasError, result);
         });
     });
 
@@ -197,6 +204,7 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
     };
 
     var body = '';
+    var hasError = true;
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
             body += chunk;
@@ -210,8 +218,9 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
             if(response.statusCode == '200')
             {
                 result.data = JSON.parse(body);
+                hasError = false;
             }
-            callback(false, result);
+            callback(hasError, result);
         });
     });
 
@@ -239,6 +248,7 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
     };
 
     var body = '';
+    var hasError = true;
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
             body += chunk;
@@ -252,8 +262,9 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
             if(response.statusCode =='200')
             {
                 result.data = JSON.parse(body);
+                hasError = false;
             }
-            callback(false, result);
+            callback(hasError, result);
         });
     });
 
@@ -282,6 +293,7 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
     };
 
     var body = '';
+    var hasError = true;
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
             body += chunk;
@@ -295,8 +307,9 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
             if(response.statusCode=='200')
             {
                 result.data = JSON.parse(body);
+                hasError = false;
             }
-            callback(false, result);
+            callback(hasError, result);
         });
     });
 
@@ -320,14 +333,16 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
 B2ShareClient.prototype.createADraftRecord = function(data, callback) {
     var params = {
         host: this.host,
-        path: '/api/records?access_token=' + this.access_token,
+        path: '/api/records/?access_token=' + this.access_token,
+        method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
-        },
-        method: 'POST'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
     };
 
     var body = '';
+    var hasError = true;
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
             body += chunk;
@@ -338,11 +353,12 @@ B2ShareClient.prototype.createADraftRecord = function(data, callback) {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode == '200')
+            if(response.statusCode == '201')
             {
                 result.data = JSON.parse(body);
+                hasError = false;
             }
-            callback(false, result);
+            callback(hasError, result);
         });
     });
 
@@ -378,6 +394,7 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callb
     };
 
     var body = '';
+    var hasError = true;
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
             body += chunk;
@@ -391,8 +408,9 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callb
             if(response.statusCode == '200')
             {
                 result.data = JSON.parse(body);
+                hasError = false;
             }
-            callback(false, result);
+            callback(hasError, result);
         });
     });
 
@@ -422,6 +440,7 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
     };
 
     var body = '';
+    var hasError = true;
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
             body += chunk;
@@ -435,8 +454,9 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
             if(response.statusCode == '200')
             {
                 result.data = JSON.parse(body);
+                hasError = false;
             }
-            callback(false, result);
+            callback(hasError, result);
         });
     });
 
@@ -470,6 +490,7 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
     };
 
     var body = '';
+    var hasError = true;
     var req = https.request(params, function (response) {
         response.on('data', function (chunk) {
             body += chunk;
@@ -483,8 +504,9 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
             if(response.statusCode == '200')
             {
                 result.data = JSON.parse(body);
+                hasError = false;
             }
-            callback(false, result);
+            callback(hasError, result);
         });
     });
 
