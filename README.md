@@ -20,6 +20,9 @@ npm install node-b2share-v2
 
 ```javascript
 var B2ShareClient = require('node-b2share-v2');
+
+Warning: Make sure you create the access token for the respective host. For instance if you are interacting with the training url(trng-b2share.eudat.eu), create the access token for this host in https://trng-b2share.eudat.eu/user, if you are using the main url create the token in https://b2share.eudat.eu/user
+
 /**
  * Initiates the B2ShareClient
  * @param host the host required to execute the requests(ex: trng-b2share.eudat.eu)
@@ -34,46 +37,6 @@ var client = new B2ShareClient(url, access_token)
  * @param callback
  */
 client.listCommunities(function(err, communities)
-
-Success Response:
-
-{
-  "statusCode": 200,
-  "statusMessage": "OK",
-  "data": {
-    "hits": {
-      "hits": [
-        {
-          "created": "Wed, 21 Dec 2016 08:57:40 GMT",
-          "description": "Aalto University",
-          "id": "c4234f93-da96-4d2f-a2c8-fa83d0775212",
-          "links": {
-            "self": "https://trng-b2share.eudat.eu/api/communities/c4234f93-da96-4d2f-a2c8-fa83d0775212"
-          },
-          "logo": "/img/communities/aalto.jpg",
-          "name": "Aalto",
-          "publication_workflow": "direct_publish",
-          "restricted_submission": true,
-          "roles": {
-            "admin": {
-              "description": "Admin role of the community \"Aalto\"",
-              "id": 1,
-              "name": "com:c4234f93da964d2fa2c8fa83d0775212:admin"
-            },
-            "member": {
-              "description": "Member role of the community \"Aalto\"",
-              "id": 2,
-              "name": "com:c4234f93da964d2fa2c8fa83d0775212:member"
-            }
-}
-
-Error Response:
-
-{
-  "statusCode": "The error code",
-  "statusMessage": "Error message",
-}
-
 
 /**
  * Gets a specific community schema
