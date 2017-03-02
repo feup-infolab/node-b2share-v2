@@ -133,7 +133,7 @@ describe('#B2ShareClient', function () {
         this.timeout(2000000);
         var expectedStatusCode = '200';
         fileBucketID = bucketUrlToListFiles.split('/').pop();
-        fs.readFile(process.cwd() + '/testFile.txt', function (err, data) {
+        fs.readFile(__dirname + '/testFile.txt', function (err, data) {
             if(!err)
             {
                 assert.doesNotThrow(function () {
