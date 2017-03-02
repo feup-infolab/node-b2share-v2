@@ -382,11 +382,11 @@ B2ShareClient.prototype.createADraftRecord = function(data, callback) {
  * @param callback
  */
 B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callback) {
-    var bucketID = info.bucketID;
+    var fileBucketID = info.fileBucketID;
     var fileNameWithExt = info.fileNameWithExt;
     var params = {
         host: this.host,
-        path: '/api/files/' + bucketID + '/' + fileNameWithExt + '?access_token=' + this.access_token,
+        path: '/api/files/' + fileBucketID + '/' + fileNameWithExt + '?access_token=' + this.access_token,
         headers: {
             'Content-Type': 'application/octet-stream'
         },

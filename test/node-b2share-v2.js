@@ -118,7 +118,7 @@ describe('#B2ShareClient', function () {
         assert.doesNotThrow(function () {
             //var data = {"titles":[{"title":"newCenas"}], "community":"e9b9792e-79fb-4b07-b6b4-b9c2bd06d095", "open_access":true, "community_specific": {}, "publication_state":"draft"};
             //var data = {"titles":[{"title":"newCenas"}], "open_access":true, "community_specific": {}};
-            var data = {"titles":[{"title":"cenasssssNelson"}], "community":"e9b9792e-79fb-4b07-b6b4-b9c2bd06d095", "open_access":true, "community_specific": {}};
+            var data = {"titles":[{"title":"NEWTESTFIXE"}], "community":"e9b9792e-79fb-4b07-b6b4-b9c2bd06d095", "open_access":true, "community_specific": {}};
             client.createADraftRecord(data, function (err, body) {
                 recordIDToUpdate = body.data.id;
                 bucketUrlToListFiles = body.data.links.files;
@@ -139,7 +139,7 @@ describe('#B2ShareClient', function () {
                 assert.doesNotThrow(function () {
                     //var info = {"bucketID":bucketIDForUploadTest.split('/').pop(), "fileNameWithExt": "testFile.txt"};
                     //var info = {"bucketID":bucketUrlToListFiles.split('/').pop(), "fileNameWithExt": "testFile.txt"};
-                    var info = {"bucketID":fileBucketID, "fileNameWithExt": "testFile.txt"};
+                    var info = {"fileBucketID":fileBucketID, "fileNameWithExt": "testFile.txt"};
                     client.uploadFileIntoDraftRecord(info, data, function (err, body) {
                         assert.equal(body.statusCode, expectedStatusCode);
                         done();
@@ -174,7 +174,7 @@ describe('#B2ShareClient', function () {
         var expectedStatusCode = '200';
         this.timeout(2000000);
         var jsonPatchFormatData = [
-            { "op": "replace", "path": "/titles/0/title", "value": "FINAL" }
+            { "op": "replace", "path": "/titles/0/title", "value": "TESTEBONITO2" }
         ];
 
         assert.doesNotThrow(function () {
