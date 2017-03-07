@@ -1,4 +1,5 @@
 var https = require('follow-redirects').https;
+var querystring = require('querystring');
 
 /**
  * Initiates the B2ShareClient
@@ -9,7 +10,7 @@ var https = require('follow-redirects').https;
 function B2ShareClient(host, access_token)
 {
     this.host = host;
-    this.access_token = access_token;
+    this.access_token = querystring.escape(access_token);
 };
 
 /**
@@ -63,6 +64,7 @@ B2ShareClient.prototype.listCommunities = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
+    var communityID = querystring.escape(communityID);
     var params = {
         host: this.host,
         path: '/api/communities/' + communityID + '/schemas/last?access_token=' + this.access_token,
@@ -152,6 +154,7 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callback) {
+    var communityID = querystring.escape(communityID);
     var params = {
         host: this.host,
         path: '/api/records/?q=community:' + communityID + '?access_token=' + this.access_token,
@@ -197,6 +200,7 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
  * @param callback
  */
 B2ShareClient.prototype.searchRecords = function (queryString, callback) {
+    var queryString = querystring.escape(queryString);
     var params = {
         host: this.host,
         path: '/api/records/?q=' + queryString + '?access_token=' + this.access_token,
@@ -286,6 +290,7 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
+    var recordID = querystring.escape(recordID);
     var params = {
         host: this.host,
         path: '/api/records/' +  recordID + '?access_token=' + this.access_token,
@@ -382,8 +387,8 @@ B2ShareClient.prototype.createADraftRecord = function(data, callback) {
  * @param callback
  */
 B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callback) {
-    var fileBucketID = info.fileBucketID;
-    var fileNameWithExt = info.fileNameWithExt;
+    var fileBucketID = querystring.escape(info.fileBucketID);
+    var fileNameWithExt = querystring.escape(info.fileNameWithExt);
     var params = {
         host: this.host,
         path: '/api/files/' + fileBucketID + '/' + fileNameWithExt + '?access_token=' + this.access_token,
@@ -433,6 +438,7 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callb
  * @param callback
  */
 B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callback) {
+    var fileBucketID = querystring.escape(fileBucketID);
     var params = {
         host: this.host,
         path: '/api/files/' +  fileBucketID + '?access_token=' + this.access_token,
@@ -479,6 +485,7 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
  * @param callback
  */
 B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatchFormatData, callback) {
+    var recordID = querystring.escape(recordID);
     var params = {
         host: this.host,
         path: '/api/records/' +  recordID + '/draft?access_token=' + this.access_token,
