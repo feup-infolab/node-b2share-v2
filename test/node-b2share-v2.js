@@ -17,7 +17,7 @@ describe('#B2ShareClient with success', function () {
         client = new B2ShareClient(host, accessTokens);
     });
     it('listCommunities with success', function (done) {
-        var expectedStatusCode = '200';
+        var expectedStatusCode = 200;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -30,7 +30,7 @@ describe('#B2ShareClient with success', function () {
     });
 
     it('getCommunitySchema with success', function (done) {
-        var expectedStatusCode = '200';
+        var expectedStatusCode = 200;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -44,7 +44,7 @@ describe('#B2ShareClient with success', function () {
     });
 
     it('listAllRecords with success', function (done) {
-        var expectedStatusCode = '200';
+        var expectedStatusCode = 200;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -57,7 +57,7 @@ describe('#B2ShareClient with success', function () {
     });
 
     it('listRecordsPerCommunity with success', function (done) {
-        var expectedStatusCode = '200';
+        var expectedStatusCode = 200;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -71,7 +71,7 @@ describe('#B2ShareClient with success', function () {
     });
 
     it('searchRecords with success', function (done) {
-        var expectedStatusCode = '200';
+        var expectedStatusCode = 200;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -85,7 +85,7 @@ describe('#B2ShareClient with success', function () {
     });
 
     it('searchDrafts with success', function (done) {
-        var expectedStatusCode = '200';
+        var expectedStatusCode = 200;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -98,7 +98,7 @@ describe('#B2ShareClient with success', function () {
     });
 
     it('getSpecificRecord with success', function (done) {
-        var expectedStatusCode = '200';
+        var expectedStatusCode = 200;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -112,7 +112,7 @@ describe('#B2ShareClient with success', function () {
     });
 
     it('createADraftRecord with success', function (done) {
-        var expectedStatusCode = '201';
+        var expectedStatusCode = 201;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -129,7 +129,7 @@ describe('#B2ShareClient with success', function () {
 
     it('uploadFileIntoDraftRecord with success', function (done) {
         this.timeout(5000);
-        var expectedStatusCode = '200';
+        var expectedStatusCode = 200;
         fileBucketID = bucketUrlToListFiles.split('/').pop();
         fs.readFile(__dirname + '/testFile.txt', function (err, data) {
             if(!err)
@@ -153,7 +153,7 @@ describe('#B2ShareClient with success', function () {
     });
 
     it('listUploadedFilesInRecord with success', function (done) {
-        var expectedStatusCode = '200';
+        var expectedStatusCode = 200;
         this.timeout(5000);
         var buffer = [];
         assert.doesNotThrow(function () {
@@ -167,7 +167,7 @@ describe('#B2ShareClient with success', function () {
 
 
     it('updateDraftRecordMetadata with success', function (done) {
-        var expectedStatusCode = '200';
+        var expectedStatusCode = 200;
         this.timeout(5000);
         var jsonPatchFormatData = [
             { "op": "replace", "path": "/titles/0/title", "value": "TESTEBONITO2" }
@@ -184,7 +184,7 @@ describe('#B2ShareClient with success', function () {
     });
 
     it('submitDraftRecordForPublication with success', function (done) {
-        var expectedStatusCode = '200';
+        var expectedStatusCode = 200;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -211,7 +211,7 @@ describe('#B2ShareClient with errors', function () {
         client = new B2ShareClient(host, accessTokens);
     });
     it('listCommunities Error', function (done) {
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -224,7 +224,7 @@ describe('#B2ShareClient with errors', function () {
     });
 
     it('getCommunitySchema Error', function (done) {
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -238,7 +238,7 @@ describe('#B2ShareClient with errors', function () {
     });
 
     it('listAllRecords Error', function (done) {
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -251,7 +251,7 @@ describe('#B2ShareClient with errors', function () {
     });
 
     it('listRecordsPerCommunity Error', function (done) {
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -265,7 +265,7 @@ describe('#B2ShareClient with errors', function () {
     });
 
     it('searchRecords Error', function (done) {
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -279,7 +279,7 @@ describe('#B2ShareClient with errors', function () {
     });
 
     it('searchDrafts Error', function (done) {
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -292,7 +292,7 @@ describe('#B2ShareClient with errors', function () {
     });
 
     it('getSpecificRecord Error', function (done) {
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -306,7 +306,7 @@ describe('#B2ShareClient with errors', function () {
     });
 
     it('createADraftRecord Error', function (done) {
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {
@@ -325,7 +325,7 @@ describe('#B2ShareClient with errors', function () {
 
     it('uploadFileIntoDraftRecord Error', function (done) {
         this.timeout(5000);
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         fileBucketID = bucketUrlToListFiles.split('/').pop();
         fs.readFile(__dirname + '/testFile.txt', function (err, data) {
             if(!err)
@@ -349,7 +349,7 @@ describe('#B2ShareClient with errors', function () {
     });
 
     it('listUploadedFilesInRecord Error', function (done) {
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         this.timeout(5000);
         var buffer = [];
         assert.doesNotThrow(function () {
@@ -363,7 +363,7 @@ describe('#B2ShareClient with errors', function () {
 
 
     it('updateDraftRecordMetadata Error', function (done) {
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         this.timeout(5000);
         var jsonPatchFormatData = [
             { "op": "replace", "path": "/titles/0/title", "value": "TESTEBONITO2" }
@@ -381,7 +381,7 @@ describe('#B2ShareClient with errors', function () {
     });
 
     it('submitDraftRecordForPublication Error', function (done) {
-        var expectedStatusCode = '500';
+        var expectedStatusCode = 500;
         this.timeout(5000);
 
         assert.doesNotThrow(function () {

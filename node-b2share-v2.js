@@ -37,7 +37,7 @@ B2ShareClient.prototype.listCommunities = function (callback) {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode == '200')
+            if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
                 hasError = false;
@@ -64,7 +64,7 @@ B2ShareClient.prototype.listCommunities = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
-    var communityID = querystring.escape(communityID);
+    communityID = querystring.escape(communityID);
     var params = {
         host: this.host,
         path: '/api/communities/' + communityID + '/schemas/last?access_token=' + this.access_token,
@@ -83,7 +83,7 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode =='200')
+            if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
                 hasError = false;
@@ -127,7 +127,7 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode = '200')
+            if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
                 hasError = false;
@@ -154,7 +154,7 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callback) {
-    var communityID = querystring.escape(communityID);
+    communityID = querystring.escape(communityID);
     var params = {
         host: this.host,
         path: '/api/records/?q=community:' + communityID + '?access_token=' + this.access_token,
@@ -173,7 +173,7 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode = '200')
+            if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
                 hasError = false;
@@ -200,7 +200,7 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
  * @param callback
  */
 B2ShareClient.prototype.searchRecords = function (queryString, callback) {
-    var queryString = querystring.escape(queryString);
+    queryString = querystring.escape(queryString);
     var params = {
         host: this.host,
         path: '/api/records/?q=' + queryString + '?access_token=' + this.access_token,
@@ -219,7 +219,7 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode == '200')
+            if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
                 hasError = false;
@@ -263,7 +263,7 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode =='200')
+            if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
                 hasError = false;
@@ -290,7 +290,7 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
-    var recordID = querystring.escape(recordID);
+    recordID = querystring.escape(recordID);
     var params = {
         host: this.host,
         path: '/api/records/' +  recordID + '?access_token=' + this.access_token,
@@ -309,7 +309,7 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode=='200')
+            if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
                 hasError = false;
@@ -358,7 +358,7 @@ B2ShareClient.prototype.createADraftRecord = function(data, callback) {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode == '201')
+            if(response.statusCode === 201)
             {
                 result.data = JSON.parse(body);
                 hasError = false;
@@ -410,7 +410,7 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callb
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode == '200')
+            if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
                 hasError = false;
@@ -438,7 +438,7 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callb
  * @param callback
  */
 B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callback) {
-    var fileBucketID = querystring.escape(fileBucketID);
+    fileBucketID = querystring.escape(fileBucketID);
     var params = {
         host: this.host,
         path: '/api/files/' +  fileBucketID + '?access_token=' + this.access_token,
@@ -457,7 +457,7 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode == '200')
+            if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
                 hasError = false;
@@ -485,7 +485,7 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
  * @param callback
  */
 B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatchFormatData, callback) {
-    var recordID = querystring.escape(recordID);
+    recordID = querystring.escape(recordID);
     var params = {
         host: this.host,
         path: '/api/records/' +  recordID + '/draft?access_token=' + this.access_token,
@@ -508,7 +508,7 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
-            if(response.statusCode == '200')
+            if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
                 hasError = false;
