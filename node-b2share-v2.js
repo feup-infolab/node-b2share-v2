@@ -11,7 +11,7 @@ function B2ShareClient(host, access_token)
 {
     this.host = host;
     this.access_token = querystring.escape(access_token);
-};
+}
 
 /**
  * Lists the communities, no arguments needed
@@ -490,7 +490,7 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
         host: this.host,
         path: '/api/records/' +  recordID + '/draft?access_token=' + this.access_token,
         headers: {
-            'content-type': 'application/json-patch+json',
+            'content-type': 'application/json-patch+json'
         },
         json: true,
         method: 'PATCH'
