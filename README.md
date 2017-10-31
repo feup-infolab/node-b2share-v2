@@ -4,6 +4,7 @@
 [![npm version](https://badge.fury.io/js/node-b2share-v2.svg)](https://badge.fury.io/js/node-b2share-v2)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6ce98852d8f14e0a9f1b112e51be878b)](https://www.codacy.com/app/silvae86/node-b2share-v2?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=feup-infolab/node-b2share-v2&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/6ce98852d8f14e0a9f1b112e51be878b)](https://www.codacy.com/app/silvae86/node-b2share-v2?utm_source=github.com&utm_medium=referral&utm_content=feup-infolab/node-b2share-v2&utm_campaign=Badge_Coverage)
+[![Chat on gitter](https://img.shields.io/gitter/room/badges/shields.svg)](https://gitter.im/feup-infolab/dendro)
 
 **(The build may be in "failing" status due to temporary downtime of the B2Share Training Website at the time of the CI Build. This server is used to simulate the API requests and test the client. Do not worry, as this is normal.)**.
 
