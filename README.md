@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/feup-infolab/node-b2share-v2.svg?branch=master)](https://travis-ci.org/feup-infolab/node-b2share-v2) [![Coverage Status](https://coveralls.io/repos/github/feup-infolab/node-b2share-v2/badge.svg?branch=master)](https://coveralls.io/github/feup-infolab/node-b2share-v2?branch=master) 
 [![npm version](https://badge.fury.io/js/node-b2share-v2.svg)](https://badge.fury.io/js/node-b2share-v2)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6ce98852d8f14e0a9f1b112e51be878b)](https://www.codacy.com/app/silvae86/node-b2share-v2?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=feup-infolab/node-b2share-v2&amp;utm_campaign=Badge_Grade)
 
 **(The build may be in "failing" status due to temporary downtime of the B2Share Training Website at the time of the CI Build. This server is used to simulate the API requests and test the client. Do not worry, as this is normal.)**.
 
