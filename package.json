@@ -22,7 +22,8 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "mocha-lcov-reporter": "^1.2.0",
-    "stream-to-array": "^2.3.0"
+    "stream-to-array": "^2.3.0",
+    "codacy-coverage": "^2.0.3"
   },
   "dependencies": {
     "follow-redirects": "^1.2.1",
