@@ -1,6 +1,6 @@
 {
   "name": "@feup-infolab/node-b2share-v2",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "(Under construction)",
   "main": "node-b2share-v2.js",
   "scripts": {
