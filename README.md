@@ -19,7 +19,7 @@ Developed in the context of the [DataPublication@UPorto data pilot](https://euda
 ## Install
 
 ```bash
-npm install node-b2share-v2
+npm i @feup-infolab/node-b2share-v2
 ```
 
 ## Use in your project
