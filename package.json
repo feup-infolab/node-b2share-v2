@@ -1,5 +1,5 @@
 {
-  "name": "node-b2share-v2",
+  "name": "@feup-infolab/node-b2share-v2",
   "version": "2.0.0",
   "description": "(Under construction)",
   "main": "node-b2share-v2.js",
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/feup-infolab/node-b2share-v2.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/feup-infolab/node-b2share-v2/issues"
   },
