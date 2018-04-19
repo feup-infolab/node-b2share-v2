@@ -98,44 +98,70 @@ B2ShareClient.prototype.listCommunities = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
-    communityID = querystring.escape(communityID);
-    const params = {
-        host: this.host,
-        path: "/api/communities/" + communityID + "/schemas/last?access_token=" + this.accessToken,
-        method: "GET"
+    const validInputs = function ()
+    {
+        try
+        {
+            if(!(typeof communityID === "string" || communityID instanceof String))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        catch (err)
+        {
+            return false;
+        }
     };
 
-    let body = "";
-    let hasError = true;
-    let req = https.request(params, function (response) {
-        response.on("data", function (chunk) {
-            body += chunk;
-        });
-
-        response.on("end", function () {
-            let result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
-            };
-            if(response.statusCode === 200)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
-            }
-            callback(hasError, result);
-        });
-    });
-
-    req.on("error", function (e) {
-        console.log(e);
-        let result = {
-            "statusCode": "500",
-            "statusMessage": "Error getting the community schema"
+    if(validInputs() === true)
+    {
+        communityID = querystring.escape(communityID);
+        const params = {
+            host: this.host,
+            path: "/api/communities/" + communityID + "/schemas/last?access_token=" + this.accessToken,
+            method: "GET"
         };
-        callback(true, result);
-    });
 
-    req.end();
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
+
+            response.on("end", function () {
+                let result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = null;
+                }
+                callback(hasError, result);
+            });
+        });
+
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                "statusCode": "500",
+                "statusMessage": "Error getting the community schema"
+            };
+            callback(true, result);
+        });
+
+        req.end();
+    }
+    else
+    {
+        callback(true, "Invalid communityID");
+    }
 };
 
 /**
@@ -188,41 +214,67 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callback) {
-    communityID = querystring.escape(communityID);
-    const params = {
-        host: this.host,
-        path: "/api/records/?q=community:" + communityID + "?access_token=" + this.accessToken,
-        method: "GET"
-    };
-    let body = "";
-    let hasError = true;
-    let req = https.request(params, function (response) {
-        response.on("data", function (chunk) {
-            body += chunk;
-        });
-
-        response.on("end", function () {
-            let result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
-            };
-            if(response.statusCode === 200)
+    const validInputs = function ()
+    {
+        try
+        {
+            if(!(typeof communityID === "string" || communityID instanceof String))
             {
-                result.data = JSON.parse(body);
-                hasError = false;
+                return false;
             }
-            callback(hasError, result);
-        });
-    });
-    req.on("error", function (e) {
-        console.log(e);
-        let result = {
-            "statusCode": "500",
-            "statusMessage": "Error getting records per community"
+            else
+            {
+                return true;
+            }
+        }
+        catch (err)
+        {
+            return false;
+        }
+    };
+
+    if(validInputs() === true)
+    {
+        communityID = querystring.escape(communityID);
+        const params = {
+            host: this.host,
+            path: "/api/records/?q=community:" + communityID + "?access_token=" + this.accessToken,
+            method: "GET"
         };
-        callback(true, result);
-    });
-    req.end();
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
+
+            response.on("end", function () {
+                let result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
+        });
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                "statusCode": "500",
+                "statusMessage": "Error getting records per community"
+            };
+            callback(true, result);
+        });
+        req.end();
+    }
+    else
+    {
+        callback(true, "Invalid communityID");
+    }
 };
 
 /**
@@ -231,41 +283,67 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
  * @param callback
  */
 B2ShareClient.prototype.searchRecords = function (queryString, callback) {
-    queryString = querystring.escape(queryString);
-    const params = {
-        host: this.host,
-        path: "/api/records/?q=" + queryString + "?access_token=" + this.accessToken,
-        method: "GET"
-    };
-    let body = "";
-    let hasError = true;
-    let req = https.request(params, function (response) {
-        response.on("data", function (chunk) {
-            body += chunk;
-        });
-
-        response.on("end", function () {
-            let result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
-            };
-            if(response.statusCode === 200)
+    const validInputs = function ()
+    {
+        try
+        {
+            if(!(typeof queryString === "string" || queryString instanceof String))
             {
-                result.data = JSON.parse(body);
-                hasError = false;
+                return false;
             }
-            callback(hasError, result);
-        });
-    });
-    req.on("error", function (e) {
-        console.log(e);
-        let result = {
-            "statusCode": "500",
-            "statusMessage": "Error searching a record"
+            else
+            {
+                return true;
+            }
+        }
+        catch (err)
+        {
+            return false;
+        }
+    };
+
+    if(validInputs() === true)
+    {
+        queryString = querystring.escape(queryString);
+        const params = {
+            host: this.host,
+            path: "/api/records/?q=" + queryString + "?access_token=" + this.accessToken,
+            method: "GET"
         };
-        callback(true, result);
-    });
-    req.end();
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
+
+            response.on("end", function () {
+                let result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
+        });
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                "statusCode": "500",
+                "statusMessage": "Error searching a record"
+            };
+            callback(true, result);
+        });
+        req.end();
+    }
+    else
+    {
+        callback(true, "Invalid queryString");
+    }
 };
 
 /**
