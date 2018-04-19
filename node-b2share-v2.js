@@ -1,5 +1,10 @@
-var https = require('follow-redirects').https;
-var querystring = require('querystring');
+const followRedirects = require("follow-redirects");
+followRedirects.maxBodyLength = 10 * 1024 * 1024 * 1024;
+const https = followRedirects.https;
+const querystring = require("querystring");
+const fs = require("fs");
+const path = require("path");
+
 
 /**
  * Initiates the B2ShareClient
@@ -9,8 +14,37 @@ var querystring = require('querystring');
  */
 function B2ShareClient(host, access_token)
 {
-    this.host = host;
-    this.access_token = querystring.escape(access_token);
+    const validInputs = function ()
+    {
+        try
+        {
+            if(!(typeof host === "string" || host instanceof String))
+            {
+                return false
+            }
+            else if(!(typeof access_token === "string" || access_token instanceof String))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        catch (err)
+        {
+            return false;
+        }
+    };
+    if(validInputs() === true)
+    {
+        this.host = host;
+        this.access_token = querystring.escape(access_token);
+    }
+    else
+    {
+        throw new Error("B2SHARE host and user access token are required!");
+    }
 }
 
 /**
@@ -19,21 +53,21 @@ function B2ShareClient(host, access_token)
  */
 B2ShareClient.prototype.listCommunities = function (callback) {
 
-    var params = {
-      host: this.host,
-      path: '/api/communities/?access_token=' + this.access_token,
-      method: 'GET'
+    const params = {
+        host: this.host,
+        path: "/api/communities/?access_token=" + this.access_token,
+        method: "GET"
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-           body += chunk;
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
+            body += chunk;
         });
 
-        response.on('end', function () {
-            var result = {
+        response.on("end", function () {
+            let result = {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
@@ -46,11 +80,11 @@ B2ShareClient.prototype.listCommunities = function (callback) {
         });
     });
 
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error getting communities'
+        let result = {
+            "statusCode": "500",
+            "statusMessage": "Error getting communities"
         };
         callback(true, result);
     });
@@ -65,21 +99,21 @@ B2ShareClient.prototype.listCommunities = function (callback) {
  */
 B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
     communityID = querystring.escape(communityID);
-    var params = {
+    const params = {
         host: this.host,
-        path: '/api/communities/' + communityID + '/schemas/last?access_token=' + this.access_token,
-        method: 'GET'
+        path: "/api/communities/" + communityID + "/schemas/last?access_token=" + this.access_token,
+        method: "GET"
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-           body += chunk;
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
+            body += chunk;
         });
 
-        response.on('end', function () {
-            var result = {
+        response.on("end", function () {
+            let result = {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
@@ -92,11 +126,11 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
         });
     });
 
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error getting the community schema'
+        let result = {
+            "statusCode": "500",
+            "statusMessage": "Error getting the community schema"
         };
         callback(true, result);
     });
@@ -109,21 +143,21 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
  * @param callback
  */
 B2ShareClient.prototype.listAllRecords = function (callback) {
-    var params = {
+    const params = {
         host: this.host,
-        path: '/api/records/?access_token=' + this.access_token,
-        method: 'GET'
+        path: "/api/records/?access_token=" + this.access_token,
+        method: "GET"
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
             body += chunk;
         });
 
-        response.on('end', function () {
-            var result = {
+        response.on("end", function () {
+            let result = {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
@@ -136,11 +170,11 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
         });
     });
 
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error getting all records'
+        let result = {
+            "statusCode": "500",
+            "statusMessage": "Error getting all records"
         };
         callback(true, result);
     });
@@ -155,21 +189,20 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
  */
 B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callback) {
     communityID = querystring.escape(communityID);
-    var params = {
+    const params = {
         host: this.host,
-        path: '/api/records/?q=community:' + communityID + '?access_token=' + this.access_token,
-        method: 'GET'
+        path: "/api/records/?q=community:" + communityID + "?access_token=" + this.access_token,
+        method: "GET"
     };
-
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
             body += chunk;
         });
 
-        response.on('end', function () {
-            var result = {
+        response.on("end", function () {
+            let result = {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
@@ -181,16 +214,14 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
             callback(hasError, result);
         });
     });
-
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error getting records per community'
+        let result = {
+            "statusCode": "500",
+            "statusMessage": "Error getting records per community"
         };
         callback(true, result);
     });
-
     req.end();
 };
 
@@ -201,21 +232,20 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
  */
 B2ShareClient.prototype.searchRecords = function (queryString, callback) {
     queryString = querystring.escape(queryString);
-    var params = {
+    const params = {
         host: this.host,
-        path: '/api/records/?q=' + queryString + '?access_token=' + this.access_token,
-        method: 'GET'
+        path: "/api/records/?q=" + queryString + "?access_token=" + this.access_token,
+        method: "GET"
     };
-
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
             body += chunk;
         });
 
-        response.on('end', function () {
-            var result = {
+        response.on("end", function () {
+            let result = {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
@@ -227,16 +257,14 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
             callback(hasError, result);
         });
     });
-
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error searching a record'
+        let result = {
+            "statusCode": "500",
+            "statusMessage": "Error searching a record"
         };
         callback(true, result);
     });
-
     req.end();
 };
 
@@ -245,21 +273,19 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
  * @param callback
  */
 B2ShareClient.prototype.searchDrafts = function (callback) {
-    var params = {
+    const params = {
         host: this.host,
-        path: '/api/records/?drafts?access_token=' + this.access_token,
-        method: 'GET'
+        path: "/api/records/?drafts?access_token=" + this.access_token,
+        method: "GET"
     };
-
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
             body += chunk;
         });
-
-        response.on('end', function () {
-            var result = {
+        response.on("end", function () {
+            let result = {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
@@ -271,16 +297,14 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
             callback(hasError, result);
         });
     });
-
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error searching for drafts'
+        let result = {
+            "statusCode": "500",
+            "statusMessage": "Error searching for drafts"
         };
         callback(true, result);
     });
-
     req.end();
 };
 
@@ -291,21 +315,20 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
  */
 B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
     recordID = querystring.escape(recordID);
-    var params = {
+    const params = {
         host: this.host,
-        path: '/api/records/' +  recordID + '?access_token=' + this.access_token,
-        method: 'GET'
+        path: "/api/records/" +  recordID + "?access_token=" + this.access_token,
+        method: "GET"
     };
-
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
             body += chunk;
         });
 
-        response.on('end', function () {
-            var result = {
+        response.on("end", function () {
+            let result = {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
@@ -318,11 +341,11 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
         });
     });
 
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error getting specific record'
+        let result = {
+            "statusCode": "500",
+            "statusMessage": "Error getting specific record"
         };
         callback(true, result);
     });
@@ -336,25 +359,24 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
  * @param callback
  */
 B2ShareClient.prototype.createADraftRecord = function(data, callback) {
-    var params = {
+    const params = {
         host: this.host,
-        path: '/api/records/?access_token=' + this.access_token,
-        method: 'POST',
+        path: "/api/records/?access_token=" + this.access_token,
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            "Content-Type": "application/json",
+            "Accept": "application/json"
         }
     };
-
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
             body += chunk;
         });
 
-        response.on('end', function () {
-            var result = {
+        response.on("end", function () {
+            let result = {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
@@ -366,70 +388,107 @@ B2ShareClient.prototype.createADraftRecord = function(data, callback) {
             callback(hasError, result);
         });
     });
-
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error creating a draft record'
+        let result = {
+            "statusCode": "500",
+            "statusMessage": "Error creating a draft record"
         };
         callback(true, result);
     });
-
     req.write(JSON.stringify(data));
     req.end();
 };
 
+
 /**
  * Uploads a file into a draft record
- * @param info a json object with info(bucketID and the fileName with its extension) about the file eg: {"bucketID":'547485748754854875fgf', "fileNameWithExt": "testFile.txt"}
- * @param buffer the buffer with the file contents
+ * @param info a json object with info(bucketID and the absolute file path) about the file eg: {"fileBucketID":"547485748754854875fgf", "absFilePath": "/Users/np/Desktop/docs/thisIsATxtFile.txt"}
  * @param callback
  */
-B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callback) {
-    var fileBucketID = querystring.escape(info.fileBucketID);
-    var fileNameWithExt = querystring.escape(info.fileNameWithExt);
-    var params = {
-        host: this.host,
-        path: '/api/files/' + fileBucketID + '/' + fileNameWithExt + '?access_token=' + this.access_token,
-        headers: {
-            'Content-Type': 'application/octet-stream'
-        },
-        method: 'PUT'
+B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, callback) {
+
+    const validInputs = function ()
+    {
+        try
+        {
+            let infoAsAString = JSON.stringify(info);
+            let infoAsObject = JSON.parse(infoAsAString);
+            if(!infoAsObject.hasOwnProperty("fileBucketID") || !(typeof infoAsObject.fileBucketID === "string" || infoAsObject.fileBucketID instanceof String))
+            {
+                //Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields
+                return false;
+            }
+            else if(!infoAsObject.hasOwnProperty("absFilePath") || !(typeof infoAsObject.absFilePath === "string" || infoAsObject.absFilePath instanceof String))
+            {
+                //Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        catch(error)
+        {
+            //Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields
+            return false;
+        }
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-            body += chunk;
-        });
-
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
-            };
-            if(response.statusCode === 200)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
-            }
-            callback(hasError, result);
-        });
-    });
-
-    req.on('error', function (e) {
-        console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error uploadind a file to a draft record'
+    if(validInputs() === true)
+    {
+        const fileBucketID = querystring.escape(info.fileBucketID);
+        const absFilePath = info.absFilePath;
+        if (!fs.existsSync(absFilePath)) {
+            return callback(true, "File to upload to B2SHARE does not exist: " + absFilePath);
+        }
+        const fileNameWithExt = querystring.escape(path.basename(absFilePath));
+        const params = {
+            host: this.host,
+            path: "/api/files/" + fileBucketID + "/" + fileNameWithExt + "?access_token=" + this.access_token,
+            headers: {
+                "Content-Type": "application/octet-stream"
+            },
+            method: "PUT"
         };
-        callback(true, result);
-    });
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
 
-    req.write(buffer);
-    req.end();
+            response.on("end", function () {
+                let result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = null;
+                }
+                callback(hasError, result);
+            });
+        });
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                "statusCode": "500",
+                "statusMessage": "Error uploading a file to a draft record"
+            };
+            callback(true, result);
+        });
+        req.on("end", function (e) {
+            console.log("Request was completed!!");
+        });
+        fs.createReadStream(absFilePath).pipe(req);
+    }
+    else
+    {
+        callback(true, "Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields");
+    }
 };
 
 /**
@@ -439,21 +498,21 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callb
  */
 B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callback) {
     fileBucketID = querystring.escape(fileBucketID);
-    var params = {
+    const params = {
         host: this.host,
-        path: '/api/files/' +  fileBucketID + '?access_token=' + this.access_token,
-        method: 'GET'
+        path: "/api/files/" +  fileBucketID + "?access_token=" + this.access_token,
+        method: "GET"
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
             body += chunk;
         });
 
-        response.on('end', function () {
-            var result = {
+        response.on("end", function () {
+            let result = {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
@@ -466,11 +525,11 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
         });
     });
 
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error listing uploaded files for a record'
+        let result = {
+            "statusCode": "500",
+            "statusMessage": "Error listing uploaded files for a record"
         };
         callback(true, result);
     });
@@ -486,25 +545,25 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
  */
 B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatchFormatData, callback) {
     recordID = querystring.escape(recordID);
-    var params = {
+    const params = {
         host: this.host,
-        path: '/api/records/' +  recordID + '/draft?access_token=' + this.access_token,
+        path: "/api/records/" +  recordID + "/draft?access_token=" + this.access_token,
         headers: {
-            'content-type': 'application/json-patch+json'
+            "content-type": "application/json-patch+json"
         },
         json: true,
-        method: 'PATCH'
+        method: "PATCH"
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
             body += chunk;
         });
 
-        response.on('end', function () {
-            var result = {
+        response.on("end", function () {
+            let result = {
                 "statusCode": response.statusCode,
                 "statusMessage": response.statusMessage
             };
@@ -517,11 +576,11 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
         });
     });
 
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error updating a draft metadata'
+        let result = {
+            "statusCode": "500",
+            "statusMessage": "Error updating a draft metadata"
         };
         callback(true, result);
     });
@@ -536,11 +595,10 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
  * @param callback
  */
 B2ShareClient.prototype.submitDraftRecordForPublication= function (recordID, callback) {
-    var jsonPatchFormatData = [{"op": "add", "path":"/publication_state", "value": "submitted"}];
+    const jsonPatchFormatData = [{"op": "add", "path":"/publication_state", "value": "submitted"}];
     this.updateDraftRecordMetadata(recordID, jsonPatchFormatData, function (error, body) {
-       callback(error, body);
+        callback(error, body);
     });
 };
 
 module.exports = B2ShareClient;
-
