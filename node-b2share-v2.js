@@ -9,10 +9,10 @@ const path = require("path");
 /**
  * Initiates the B2ShareClient
  * @param host the host required to execute the requests(ex: trng-b2share.eudat.eu)
- * @param access_token the user's access token
+ * @param accessToken the user's access token
  * @constructor
  */
-function B2ShareClient(host, access_token)
+function B2ShareClient(host, accessToken)
 {
     const validInputs = function ()
     {
@@ -20,9 +20,9 @@ function B2ShareClient(host, access_token)
         {
             if(!(typeof host === "string" || host instanceof String))
             {
-                return false
+                return false;
             }
-            else if(!(typeof access_token === "string" || access_token instanceof String))
+            else if(!(typeof accessToken === "string" || accessToken instanceof String))
             {
                 return false;
             }
@@ -39,7 +39,7 @@ function B2ShareClient(host, access_token)
     if(validInputs() === true)
     {
         this.host = host;
-        this.access_token = querystring.escape(access_token);
+        this.accessToken = querystring.escape(accessToken);
     }
     else
     {
@@ -55,7 +55,7 @@ B2ShareClient.prototype.listCommunities = function (callback) {
 
     const params = {
         host: this.host,
-        path: "/api/communities/?access_token=" + this.access_token,
+        path: "/api/communities/?access_token=" + this.accessToken,
         method: "GET"
     };
 
@@ -101,7 +101,7 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
     communityID = querystring.escape(communityID);
     const params = {
         host: this.host,
-        path: "/api/communities/" + communityID + "/schemas/last?access_token=" + this.access_token,
+        path: "/api/communities/" + communityID + "/schemas/last?access_token=" + this.accessToken,
         method: "GET"
     };
 
@@ -145,7 +145,7 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
 B2ShareClient.prototype.listAllRecords = function (callback) {
     const params = {
         host: this.host,
-        path: "/api/records/?access_token=" + this.access_token,
+        path: "/api/records/?access_token=" + this.accessToken,
         method: "GET"
     };
 
@@ -191,7 +191,7 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
     communityID = querystring.escape(communityID);
     const params = {
         host: this.host,
-        path: "/api/records/?q=community:" + communityID + "?access_token=" + this.access_token,
+        path: "/api/records/?q=community:" + communityID + "?access_token=" + this.accessToken,
         method: "GET"
     };
     let body = "";
@@ -234,7 +234,7 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
     queryString = querystring.escape(queryString);
     const params = {
         host: this.host,
-        path: "/api/records/?q=" + queryString + "?access_token=" + this.access_token,
+        path: "/api/records/?q=" + queryString + "?access_token=" + this.accessToken,
         method: "GET"
     };
     let body = "";
@@ -275,7 +275,7 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
 B2ShareClient.prototype.searchDrafts = function (callback) {
     const params = {
         host: this.host,
-        path: "/api/records/?drafts?access_token=" + this.access_token,
+        path: "/api/records/?drafts?access_token=" + this.accessToken,
         method: "GET"
     };
     let body = "";
@@ -317,7 +317,7 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
     recordID = querystring.escape(recordID);
     const params = {
         host: this.host,
-        path: "/api/records/" +  recordID + "?access_token=" + this.access_token,
+        path: "/api/records/" +  recordID + "?access_token=" + this.accessToken,
         method: "GET"
     };
     let body = "";
@@ -361,7 +361,7 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
 B2ShareClient.prototype.createADraftRecord = function(data, callback) {
     const params = {
         host: this.host,
-        path: "/api/records/?access_token=" + this.access_token,
+        path: "/api/records/?access_token=" + this.accessToken,
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -446,7 +446,7 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, callback) {
         const fileNameWithExt = querystring.escape(path.basename(absFilePath));
         const params = {
             host: this.host,
-            path: "/api/files/" + fileBucketID + "/" + fileNameWithExt + "?access_token=" + this.access_token,
+            path: "/api/files/" + fileBucketID + "/" + fileNameWithExt + "?access_token=" + this.accessToken,
             headers: {
                 "Content-Type": "application/octet-stream"
             },
@@ -481,7 +481,7 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, callback) {
             callback(true, result);
         });
         req.on("end", function (e) {
-            console.log("Request was completed!!");
+            //Request was completed!!
         });
         fs.createReadStream(absFilePath).pipe(req);
     }
@@ -500,7 +500,7 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
     fileBucketID = querystring.escape(fileBucketID);
     const params = {
         host: this.host,
-        path: "/api/files/" +  fileBucketID + "?access_token=" + this.access_token,
+        path: "/api/files/" +  fileBucketID + "?access_token=" + this.accessToken,
         method: "GET"
     };
 
@@ -547,7 +547,7 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
     recordID = querystring.escape(recordID);
     const params = {
         host: this.host,
-        path: "/api/records/" +  recordID + "/draft?access_token=" + this.access_token,
+        path: "/api/records/" +  recordID + "/draft?access_token=" + this.accessToken,
         headers: {
             "content-type": "application/json-patch+json"
         },
