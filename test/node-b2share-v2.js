@@ -2,7 +2,7 @@ let assert = require("chai").assert,
     B2ShareClient = require("../node-b2share-v2");
 
 
-describe("#B2ShareClient with success", function () {
+describe("#B2ShareClient functions with success", function () {
     let client;
     let recordIDToUpdate;
     let bucketUrlToListFiles;
@@ -183,7 +183,7 @@ describe("#B2ShareClient with success", function () {
 });
 
 
-describe("#B2ShareClient with errors", function () {
+describe("#B2ShareClient with an invalid host", function () {
     let client;
     let recordIDToUpdate;
     let bucketUrlToListFiles;

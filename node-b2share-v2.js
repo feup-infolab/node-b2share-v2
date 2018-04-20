@@ -6,6 +6,12 @@ const fs = require("fs");
 const path = require("path");
 
 
+const isAValidString = function (candidateString, minStringLength)
+{
+    let validation = (typeof candidateString === "string" || candidateString instanceof String) && (candidateString.length >= minStringLength);
+    return validation;
+};
+
 /**
  * Initiates the B2ShareClient
  * @param host the host required to execute the requests(ex: trng-b2share.eudat.eu)
@@ -16,26 +22,9 @@ function B2ShareClient(host, accessToken)
 {
     const validInputs = function ()
     {
-        try
-        {
-            if(!(typeof host === "string" || host instanceof String))
-            {
-                return false;
-            }
-            else if(!(typeof accessToken === "string" || accessToken instanceof String))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        catch (err)
-        {
-            return false;
-        }
+        return isAValidString(host, 1) && isAValidString(accessToken, 1);
     };
+
     if(validInputs() === true)
     {
         this.host = host;
@@ -100,21 +89,7 @@ B2ShareClient.prototype.listCommunities = function (callback) {
 B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
     const validInputs = function ()
     {
-        try
-        {
-            if(!(typeof communityID === "string" || communityID instanceof String))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        catch (err)
-        {
-            return false;
-        }
+        return isAValidString(communityID, 1);
     };
 
     if(validInputs() === true)
@@ -216,21 +191,7 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
 B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callback) {
     const validInputs = function ()
     {
-        try
-        {
-            if(!(typeof communityID === "string" || communityID instanceof String))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        catch (err)
-        {
-            return false;
-        }
+        return isAValidString(communityID, 1);
     };
 
     if(validInputs() === true)
@@ -285,21 +246,7 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
 B2ShareClient.prototype.searchRecords = function (queryString, callback) {
     const validInputs = function ()
     {
-        try
-        {
-            if(!(typeof queryString === "string" || queryString instanceof String))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        catch (err)
-        {
-            return false;
-        }
+        return isAValidString(queryString, 1);
     };
 
     if(validInputs() === true)
@@ -394,21 +341,7 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
 B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
     const validInputs = function ()
     {
-        try
-        {
-            if(!(typeof recordID === "string" || recordID instanceof String))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        catch (err)
-        {
-            return false;
-        }
+        return isAValidString(recordID, 1);
     };
 
     if(validInputs() === true)
@@ -465,8 +398,7 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
 B2ShareClient.prototype.createADraftRecord = function(data, callback) {
     const validInputs = function ()
     {
-        data = "undefined";
-        if(data === null || (data ))
+        if(data === null || data === undefined || data instanceof Array || typeof data !== "object")
         {
             return false;
         }
@@ -548,12 +480,12 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, callback) {
         {
             let infoAsAString = JSON.stringify(info);
             let infoAsObject = JSON.parse(infoAsAString);
-            if(!infoAsObject.hasOwnProperty("fileBucketID") || !(typeof infoAsObject.fileBucketID === "string" || infoAsObject.fileBucketID instanceof String))
+            if(!infoAsObject.hasOwnProperty("fileBucketID") || !isAValidString(infoAsObject.fileBucketID, 1))
             {
                 //Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields
                 return false;
             }
-            else if(!infoAsObject.hasOwnProperty("absFilePath") || !(typeof infoAsObject.absFilePath === "string" || infoAsObject.absFilePath instanceof String))
+            else if(!infoAsObject.hasOwnProperty("absFilePath") || !isAValidString(infoAsObject.absFilePath, 1))
             {
                 //Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields
                 return false;
@@ -631,96 +563,141 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, callback) {
  * @param callback
  */
 B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callback) {
-    fileBucketID = querystring.escape(fileBucketID);
-    const params = {
-        host: this.host,
-        path: "/api/files/" +  fileBucketID + "?access_token=" + this.accessToken,
-        method: "GET"
+    const validInputs = function ()
+    {
+        return isAValidString(fileBucketID, 1);
     };
 
-    let body = "";
-    let hasError = true;
-    let req = https.request(params, function (response) {
-        response.on("data", function (chunk) {
-            body += chunk;
-        });
-
-        response.on("end", function () {
-            let result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
-            };
-            if(response.statusCode === 200)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
-            }
-            callback(hasError, result);
-        });
-    });
-
-    req.on("error", function (e) {
-        console.log(e);
-        let result = {
-            "statusCode": "500",
-            "statusMessage": "Error listing uploaded files for a record"
+    if(validInputs() === true)
+    {
+        fileBucketID = querystring.escape(fileBucketID);
+        const params = {
+            host: this.host,
+            path: "/api/files/" +  fileBucketID + "?access_token=" + this.accessToken,
+            method: "GET"
         };
-        callback(true, result);
-    });
 
-    req.end();
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
+
+            response.on("end", function () {
+                let result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
+        });
+
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                "statusCode": "500",
+                "statusMessage": "Error listing uploaded files for a record"
+            };
+            callback(true, result);
+        });
+
+        req.end();
+    }
+    else
+    {
+        callback(true, "Invalid fileBucketID");
+    }
 };
 
 /**
  * Updates a draft record metadata
  * @param recordID the record id of the draft
- * @param jsonPatchFormatData the content of the update, follows the json patch format ex: { "op": "replace", "path": "/titles/0/title", "value": "FINAL" }
+ * @param jsonPatchFormatData the content of the update, follows the json patch format ex: [{ "op": "replace", "path": "/titles/0/title", "value": "FINAL" }]
  * @param callback
  */
 B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatchFormatData, callback) {
-    recordID = querystring.escape(recordID);
-    const params = {
-        host: this.host,
-        path: "/api/records/" +  recordID + "/draft?access_token=" + this.accessToken,
-        headers: {
-            "content-type": "application/json-patch+json"
-        },
-        json: true,
-        method: "PATCH"
+    const validInputs = function ()
+    {
+        if(!isAValidString(recordID, 1))
+        {
+            return false;
+        }
+        else if(jsonPatchFormatData === null || jsonPatchFormatData === undefined || !jsonPatchFormatData instanceof Array)
+        {
+            return false;
+        }
+        else
+        {
+            try
+            {
+                let jsonPatchFormatDataAsAString = JSON.stringify(jsonPatchFormatData);
+                let jsonPatchFormatDataAsObject = JSON.parse(jsonPatchFormatDataAsAString);
+                return true;
+            }
+            catch(error)
+            {
+                //Invalid 'jsonPatchFormatData' JSON object
+                return false;
+            }
+        }
     };
 
-    let body = "";
-    let hasError = true;
-    let req = https.request(params, function (response) {
-        response.on("data", function (chunk) {
-            body += chunk;
-        });
-
-        response.on("end", function () {
-            let result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
-            };
-            if(response.statusCode === 200)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
-            }
-            callback(hasError, result);
-        });
-    });
-
-    req.on("error", function (e) {
-        console.log(e);
-        let result = {
-            "statusCode": "500",
-            "statusMessage": "Error updating a draft metadata"
+    if(validInputs() === true)
+    {
+        recordID = querystring.escape(recordID);
+        const params = {
+            host: this.host,
+            path: "/api/records/" +  recordID + "/draft?access_token=" + this.accessToken,
+            headers: {
+                "content-type": "application/json-patch+json"
+            },
+            json: true,
+            method: "PATCH"
         };
-        callback(true, result);
-    });
 
-    req.write(JSON.stringify(jsonPatchFormatData));
-    req.end();
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
+
+            response.on("end", function () {
+                let result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
+        });
+
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                "statusCode": "500",
+                "statusMessage": "Error updating a draft metadata"
+            };
+            callback(true, result);
+        });
+
+        req.write(JSON.stringify(jsonPatchFormatData));
+        req.end();
+    }
+    else
+    {
+        callback(true, "Must supply a valid recordID and jsonPatchFormatData");
+    }
 };
 
 /**
@@ -729,10 +706,22 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
  * @param callback
  */
 B2ShareClient.prototype.submitDraftRecordForPublication= function (recordID, callback) {
-    const jsonPatchFormatData = [{"op": "add", "path":"/publication_state", "value": "submitted"}];
-    this.updateDraftRecordMetadata(recordID, jsonPatchFormatData, function (error, body) {
-        callback(error, body);
-    });
+    const validInputs = function ()
+    {
+        return isAValidString(recordID, 1);
+    };
+
+    if(validInputs() === true)
+    {
+        const jsonPatchFormatData = [{"op": "add", "path":"/publication_state", "value": "submitted"}];
+        this.updateDraftRecordMetadata(recordID, jsonPatchFormatData, function (error, body) {
+            callback(error, body);
+        });
+    }
+    else
+    {
+        callback(true, "Invalid recordID");
+    }
 };
 
 module.exports = B2ShareClient;
