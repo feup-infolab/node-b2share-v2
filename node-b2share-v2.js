@@ -392,43 +392,69 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
-    recordID = querystring.escape(recordID);
-    const params = {
-        host: this.host,
-        path: "/api/records/" +  recordID + "?access_token=" + this.accessToken,
-        method: "GET"
-    };
-    let body = "";
-    let hasError = true;
-    let req = https.request(params, function (response) {
-        response.on("data", function (chunk) {
-            body += chunk;
-        });
-
-        response.on("end", function () {
-            let result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
-            };
-            if(response.statusCode === 200)
+    const validInputs = function ()
+    {
+        try
+        {
+            if(!(typeof recordID === "string" || recordID instanceof String))
             {
-                result.data = JSON.parse(body);
-                hasError = false;
+                return false;
             }
-            callback(hasError, result);
-        });
-    });
+            else
+            {
+                return true;
+            }
+        }
+        catch (err)
+        {
+            return false;
+        }
+    };
 
-    req.on("error", function (e) {
-        console.log(e);
-        let result = {
-            "statusCode": "500",
-            "statusMessage": "Error getting specific record"
+    if(validInputs() === true)
+    {
+        recordID = querystring.escape(recordID);
+        const params = {
+            host: this.host,
+            path: "/api/records/" +  recordID + "?access_token=" + this.accessToken,
+            method: "GET"
         };
-        callback(true, result);
-    });
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
 
-    req.end();
+            response.on("end", function () {
+                let result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
+        });
+
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                "statusCode": "500",
+                "statusMessage": "Error getting specific record"
+            };
+            callback(true, result);
+        });
+
+        req.end();
+    }
+    else
+    {
+        callback(true, "Invalid recordID");
+    }
 };
 
 /**
@@ -437,45 +463,75 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
  * @param callback
  */
 B2ShareClient.prototype.createADraftRecord = function(data, callback) {
-    const params = {
-        host: this.host,
-        path: "/api/records/?access_token=" + this.accessToken,
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
+    const validInputs = function ()
+    {
+        data = "undefined";
+        if(data === null || (data ))
+        {
+            return false;
+        }
+        else
+        {
+            try
+            {
+                let dataAsAString = JSON.stringify(data);
+                let dataAsObject = JSON.parse(dataAsAString);
+                return true;
+            }
+            catch(error)
+            {
+                //Invalid 'data' JSON object
+                return false;
+            }
         }
     };
-    let body = "";
-    let hasError = true;
-    let req = https.request(params, function (response) {
-        response.on("data", function (chunk) {
-            body += chunk;
-        });
 
-        response.on("end", function () {
-            let result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
-            };
-            if(response.statusCode === 201)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
+    if(validInputs() === true)
+    {
+        const params = {
+            host: this.host,
+            path: "/api/records/?access_token=" + this.accessToken,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
-            callback(hasError, result);
-        });
-    });
-    req.on("error", function (e) {
-        console.log(e);
-        let result = {
-            "statusCode": "500",
-            "statusMessage": "Error creating a draft record"
         };
-        callback(true, result);
-    });
-    req.write(JSON.stringify(data));
-    req.end();
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
+
+            response.on("end", function () {
+                let result = {
+                    "statusCode": response.statusCode,
+                    "statusMessage": response.statusMessage
+                };
+                if(response.statusCode === 201)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
+        });
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                "statusCode": "500",
+                "statusMessage": "Error creating a draft record"
+            };
+            callback(true, result);
+        });
+        req.write(JSON.stringify(data));
+        req.end();
+    }
+    else
+    {
+        callback(true, "Invalid 'data' JSON object");
+    }
 };
 
 
