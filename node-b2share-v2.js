@@ -57,8 +57,8 @@ B2ShareClient.prototype.listCommunities = function (callback) {
 
         response.on("end", function () {
             let result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+                statusCode: response.statusCode,
+                statusMessage: response.statusMessage
             };
             if(response.statusCode === 200)
             {
@@ -72,8 +72,8 @@ B2ShareClient.prototype.listCommunities = function (callback) {
     req.on("error", function (e) {
         console.log(e);
         let result = {
-            "statusCode": "500",
-            "statusMessage": "Error getting communities"
+            statusCode: 500,
+            statusMessage : "Error getting communities"
         };
         callback(true, result);
     });
@@ -110,8 +110,8 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
 
             response.on("end", function () {
                 let result = {
-                    "statusCode": response.statusCode,
-                    "statusMessage": response.statusMessage
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
                 };
                 if(response.statusCode === 200)
                 {
@@ -125,8 +125,8 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
         req.on("error", function (e) {
             console.log(e);
             let result = {
-                "statusCode": "500",
-                "statusMessage": "Error getting the community schema"
+                statusCode: 500,
+                statusMessage: "Error getting the community schema"
             };
             callback(true, result);
         });
@@ -135,7 +135,11 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
     }
     else
     {
-        callback(true, "Invalid communityID");
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid communityID"
+        };
+        callback(true, result);
     }
 };
 
@@ -159,8 +163,8 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
 
         response.on("end", function () {
             let result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+                statusCode: response.statusCode,
+                statusMessage: response.statusMessage
             };
             if(response.statusCode === 200)
             {
@@ -174,8 +178,8 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
     req.on("error", function (e) {
         console.log(e);
         let result = {
-            "statusCode": "500",
-            "statusMessage": "Error getting all records"
+            statusCode: 500,
+            statusMessage: "Error getting all records"
         };
         callback(true, result);
     });
@@ -211,8 +215,8 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
 
             response.on("end", function () {
                 let result = {
-                    "statusCode": response.statusCode,
-                    "statusMessage": response.statusMessage
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
                 };
                 if(response.statusCode === 200)
                 {
@@ -225,8 +229,8 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
         req.on("error", function (e) {
             console.log(e);
             let result = {
-                "statusCode": "500",
-                "statusMessage": "Error getting records per community"
+                statusCode: 500,
+                statusMessage: "Error getting records per community"
             };
             callback(true, result);
         });
@@ -234,7 +238,11 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
     }
     else
     {
-        callback(true, "Invalid communityID");
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid communityID"
+        };
+        callback(true, result);
     }
 };
 
@@ -266,8 +274,8 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
 
             response.on("end", function () {
                 let result = {
-                    "statusCode": response.statusCode,
-                    "statusMessage": response.statusMessage
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
                 };
                 if(response.statusCode === 200)
                 {
@@ -280,8 +288,8 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
         req.on("error", function (e) {
             console.log(e);
             let result = {
-                "statusCode": "500",
-                "statusMessage": "Error searching a record"
+                statusCode: 500,
+                statusMessage: "Error searching a record"
             };
             callback(true, result);
         });
@@ -289,7 +297,11 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
     }
     else
     {
-        callback(true, "Invalid queryString");
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid queryString"
+        };
+        callback(true, result);
     }
 };
 
@@ -311,8 +323,8 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
         });
         response.on("end", function () {
             let result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+                statusCode: response.statusCode,
+                statusMessage: response.statusMessage
             };
             if(response.statusCode === 200)
             {
@@ -325,8 +337,8 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
     req.on("error", function (e) {
         console.log(e);
         let result = {
-            "statusCode": "500",
-            "statusMessage": "Error searching for drafts"
+            statusCode: 500,
+            statusMessage: "Error searching for drafts"
         };
         callback(true, result);
     });
@@ -361,8 +373,8 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
 
             response.on("end", function () {
                 let result = {
-                    "statusCode": response.statusCode,
-                    "statusMessage": response.statusMessage
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
                 };
                 if(response.statusCode === 200)
                 {
@@ -376,8 +388,8 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
         req.on("error", function (e) {
             console.log(e);
             let result = {
-                "statusCode": "500",
-                "statusMessage": "Error getting specific record"
+                statusCode: 500,
+                statusMessage: "Error getting specific record"
             };
             callback(true, result);
         });
@@ -386,7 +398,11 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
     }
     else
     {
-        callback(true, "Invalid recordID");
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid recordID"
+        };
+        callback(true, result);
     }
 };
 
@@ -438,8 +454,8 @@ B2ShareClient.prototype.createADraftRecord = function(data, callback) {
 
             response.on("end", function () {
                 let result = {
-                    "statusCode": response.statusCode,
-                    "statusMessage": response.statusMessage
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
                 };
                 if(response.statusCode === 201)
                 {
@@ -452,8 +468,8 @@ B2ShareClient.prototype.createADraftRecord = function(data, callback) {
         req.on("error", function (e) {
             console.log(e);
             let result = {
-                "statusCode": "500",
-                "statusMessage": "Error creating a draft record"
+                statusCode: 500,
+                statusMessage: "Error creating a draft record"
             };
             callback(true, result);
         });
@@ -462,7 +478,11 @@ B2ShareClient.prototype.createADraftRecord = function(data, callback) {
     }
     else
     {
-        callback(true, "Invalid 'data' JSON object");
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid 'data' JSON object"
+        };
+        callback(true, result);
     }
 };
 
@@ -527,8 +547,8 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, callback) {
 
             response.on("end", function () {
                 let result = {
-                    "statusCode": response.statusCode,
-                    "statusMessage": response.statusMessage
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
                 };
                 if(response.statusCode === 200)
                 {
@@ -541,8 +561,8 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, callback) {
         req.on("error", function (e) {
             console.log(e);
             let result = {
-                "statusCode": "500",
-                "statusMessage": "Error uploading a file to a draft record"
+                statusCode: 500,
+                statusMessage: "Error uploading a file to a draft record"
             };
             callback(true, result);
         });
@@ -586,8 +606,8 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
 
             response.on("end", function () {
                 let result = {
-                    "statusCode": response.statusCode,
-                    "statusMessage": response.statusMessage
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
                 };
                 if(response.statusCode === 200)
                 {
@@ -601,8 +621,8 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
         req.on("error", function (e) {
             console.log(e);
             let result = {
-                "statusCode": "500",
-                "statusMessage": "Error listing uploaded files for a record"
+                statusCode: 500,
+                statusMessage: "Error listing uploaded files for a record"
             };
             callback(true, result);
         });
@@ -670,8 +690,8 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
 
             response.on("end", function () {
                 let result = {
-                    "statusCode": response.statusCode,
-                    "statusMessage": response.statusMessage
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
                 };
                 if(response.statusCode === 200)
                 {
@@ -685,8 +705,8 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
         req.on("error", function (e) {
             console.log(e);
             let result = {
-                "statusCode": "500",
-                "statusMessage": "Error updating a draft metadata"
+                statusCode: 500,
+                statusMessage: "Error updating a draft metadata"
             };
             callback(true, result);
         });
