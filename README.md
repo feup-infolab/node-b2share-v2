@@ -93,8 +93,7 @@ client.createADraftRecord(data, function(err, draft)
 
 /**
  * Uploads a file into a draft record
- * @param info a json object with info(fileBucketID and the fileName with its extension) about the file eg: {"fileBucketID":'547485748754854875fgf', "fileNameWithExt": "testFile.txt"}
- * @param buffer the buffer with the file contents
+ * @param info a json object with info(bucketID and the absolute file path) about the file eg: {"fileBucketID":"547485748754854875fgf", "absFilePath": "/Users/np/Desktop/docs/thisIsATxtFile.txt"}
  * @param callback
  */
 client.uploadFileIntoDraftRecord(info, buffer, function(err, file)
