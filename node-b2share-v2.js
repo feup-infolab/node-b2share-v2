@@ -63,7 +63,7 @@ B2ShareClient.prototype.listCommunities = function (callback) {
             if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
-                hasError = false;
+                hasError = null;
             }
             callback(hasError, result);
         });
@@ -169,7 +169,7 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
             if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
-                hasError = false;
+                hasError = null;
             }
             callback(hasError, result);
         });
@@ -221,7 +221,7 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
                 if(response.statusCode === 200)
                 {
                     result.data = JSON.parse(body);
-                    hasError = false;
+                    hasError = null;
                 }
                 callback(hasError, result);
             });
@@ -280,7 +280,7 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
                 if(response.statusCode === 200)
                 {
                     result.data = JSON.parse(body);
-                    hasError = false;
+                    hasError = null;
                 }
                 callback(hasError, result);
             });
@@ -329,7 +329,7 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
             if(response.statusCode === 200)
             {
                 result.data = JSON.parse(body);
-                hasError = false;
+                hasError = null;
             }
             callback(hasError, result);
         });
@@ -379,7 +379,7 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
                 if(response.statusCode === 200)
                 {
                     result.data = JSON.parse(body);
-                    hasError = false;
+                    hasError = null;
                 }
                 callback(hasError, result);
             });
@@ -460,7 +460,7 @@ B2ShareClient.prototype.createADraftRecord = function(data, callback) {
                 if(response.statusCode === 201)
                 {
                     result.data = JSON.parse(body);
-                    hasError = false;
+                    hasError = null;
                 }
                 callback(hasError, result);
             });
@@ -620,7 +620,7 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
                 if(response.statusCode === 200)
                 {
                     result.data = JSON.parse(body);
-                    hasError = false;
+                    hasError = null;
                 }
                 callback(hasError, result);
             });
@@ -708,7 +708,7 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
                 if(response.statusCode === 200)
                 {
                     result.data = JSON.parse(body);
-                    hasError = false;
+                    hasError = null;
                 }
                 callback(hasError, result);
             });
