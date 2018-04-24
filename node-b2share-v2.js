@@ -1,16 +1,39 @@
-var https = require('follow-redirects').https;
-var querystring = require('querystring');
+const followRedirects = require("follow-redirects");
+followRedirects.maxBodyLength = 10 * 1024 * 1024 * 1024;
+const https = followRedirects.https;
+const querystring = require("querystring");
+const fs = require("fs");
+const path = require("path");
+
+
+const isAValidString = function (candidateString, minStringLength)
+{
+    let validation = (typeof candidateString === "string" || candidateString instanceof String) && (candidateString.length >= minStringLength);
+    return validation;
+};
 
 /**
  * Initiates the B2ShareClient
  * @param host the host required to execute the requests(ex: trng-b2share.eudat.eu)
- * @param access_token the user's access token
+ * @param accessToken the user's access token
  * @constructor
  */
-function B2ShareClient(host, access_token)
+function B2ShareClient(host, accessToken)
 {
-    this.host = host;
-    this.access_token = querystring.escape(access_token);
+    const validInputs = function ()
+    {
+        return isAValidString(host, 1) && isAValidString(accessToken, 1);
+    };
+
+    if(validInputs() === true)
+    {
+        this.host = host;
+        this.accessToken = querystring.escape(accessToken);
+    }
+    else
+    {
+        throw new Error("B2SHARE host and user access token are required!");
+    }
 }
 
 /**
@@ -19,23 +42,23 @@ function B2ShareClient(host, access_token)
  */
 B2ShareClient.prototype.listCommunities = function (callback) {
 
-    var params = {
-      host: this.host,
-      path: '/api/communities/?access_token=' + this.access_token,
-      method: 'GET'
+    const params = {
+        host: this.host,
+        path: "/api/communities/?access_token=" + this.accessToken,
+        method: "GET"
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-           body += chunk;
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
+            body += chunk;
         });
 
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+        response.on("end", function () {
+            let result = {
+                statusCode: response.statusCode,
+                statusMessage: response.statusMessage
             };
             if(response.statusCode === 200)
             {
@@ -46,11 +69,11 @@ B2ShareClient.prototype.listCommunities = function (callback) {
         });
     });
 
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error getting communities'
+        let result = {
+            statusCode: 500,
+            statusMessage : "Error getting communities"
         };
         callback(true, result);
     });
@@ -64,44 +87,60 @@ B2ShareClient.prototype.listCommunities = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
-    communityID = querystring.escape(communityID);
-    var params = {
-        host: this.host,
-        path: '/api/communities/' + communityID + '/schemas/last?access_token=' + this.access_token,
-        method: 'GET'
+    const validInputs = function ()
+    {
+        return isAValidString(communityID, 1);
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-           body += chunk;
+    if(validInputs() === true)
+    {
+        communityID = querystring.escape(communityID);
+        const params = {
+            host: this.host,
+            path: "/api/communities/" + communityID + "/schemas/last?access_token=" + this.accessToken,
+            method: "GET"
+        };
+
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
+
+            response.on("end", function () {
+                let result = {
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = null;
+                }
+                callback(hasError, result);
+            });
         });
 
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                statusCode: 500,
+                statusMessage: "Error getting the community schema"
             };
-            if(response.statusCode === 200)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
-            }
-            callback(hasError, result);
+            callback(true, result);
         });
-    });
 
-    req.on('error', function (e) {
-        console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error getting the community schema'
+        req.end();
+    }
+    else
+    {
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid communityID"
         };
         callback(true, result);
-    });
-
-    req.end();
+    }
 };
 
 /**
@@ -109,23 +148,23 @@ B2ShareClient.prototype.getCommunitySchema = function (communityID, callback) {
  * @param callback
  */
 B2ShareClient.prototype.listAllRecords = function (callback) {
-    var params = {
+    const params = {
         host: this.host,
-        path: '/api/records/?access_token=' + this.access_token,
-        method: 'GET'
+        path: "/api/records/?access_token=" + this.accessToken,
+        method: "GET"
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
             body += chunk;
         });
 
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+        response.on("end", function () {
+            let result = {
+                statusCode: response.statusCode,
+                statusMessage: response.statusMessage
             };
             if(response.statusCode === 200)
             {
@@ -136,11 +175,11 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
         });
     });
 
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error getting all records'
+        let result = {
+            statusCode: 500,
+            statusMessage: "Error getting all records"
         };
         callback(true, result);
     });
@@ -154,44 +193,57 @@ B2ShareClient.prototype.listAllRecords = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callback) {
-    communityID = querystring.escape(communityID);
-    var params = {
-        host: this.host,
-        path: '/api/records/?q=community:' + communityID + '?access_token=' + this.access_token,
-        method: 'GET'
+    const validInputs = function ()
+    {
+        return isAValidString(communityID, 1);
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-            body += chunk;
-        });
+    if(validInputs() === true)
+    {
+        communityID = querystring.escape(communityID);
+        const params = {
+            host: this.host,
+            path: "/api/records/?q=community:" + communityID + "?access_token=" + this.accessToken,
+            method: "GET"
+        };
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
 
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+            response.on("end", function () {
+                let result = {
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
+        });
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                statusCode: 500,
+                statusMessage: "Error getting records per community"
             };
-            if(response.statusCode === 200)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
-            }
-            callback(hasError, result);
+            callback(true, result);
         });
-    });
-
-    req.on('error', function (e) {
-        console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error getting records per community'
+        req.end();
+    }
+    else
+    {
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid communityID"
         };
         callback(true, result);
-    });
-
-    req.end();
+    }
 };
 
 /**
@@ -200,44 +252,57 @@ B2ShareClient.prototype.listRecordsPerCommunity = function (communityID, callbac
  * @param callback
  */
 B2ShareClient.prototype.searchRecords = function (queryString, callback) {
-    queryString = querystring.escape(queryString);
-    var params = {
-        host: this.host,
-        path: '/api/records/?q=' + queryString + '?access_token=' + this.access_token,
-        method: 'GET'
+    const validInputs = function ()
+    {
+        return isAValidString(queryString, 1);
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-            body += chunk;
-        });
+    if(validInputs() === true)
+    {
+        queryString = querystring.escape(queryString);
+        const params = {
+            host: this.host,
+            path: "/api/records/?q=" + queryString + "?access_token=" + this.accessToken,
+            method: "GET"
+        };
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
 
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+            response.on("end", function () {
+                let result = {
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
+        });
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                statusCode: 500,
+                statusMessage: "Error searching a record"
             };
-            if(response.statusCode === 200)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
-            }
-            callback(hasError, result);
+            callback(true, result);
         });
-    });
-
-    req.on('error', function (e) {
-        console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error searching a record'
+        req.end();
+    }
+    else
+    {
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid queryString"
         };
         callback(true, result);
-    });
-
-    req.end();
+    }
 };
 
 /**
@@ -245,23 +310,21 @@ B2ShareClient.prototype.searchRecords = function (queryString, callback) {
  * @param callback
  */
 B2ShareClient.prototype.searchDrafts = function (callback) {
-    var params = {
+    const params = {
         host: this.host,
-        path: '/api/records/?drafts?access_token=' + this.access_token,
-        method: 'GET'
+        path: "/api/records/?drafts?access_token=" + this.accessToken,
+        method: "GET"
     };
-
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
+    let body = "";
+    let hasError = true;
+    let req = https.request(params, function (response) {
+        response.on("data", function (chunk) {
             body += chunk;
         });
-
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+        response.on("end", function () {
+            let result = {
+                statusCode: response.statusCode,
+                statusMessage: response.statusMessage
             };
             if(response.statusCode === 200)
             {
@@ -271,16 +334,14 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
             callback(hasError, result);
         });
     });
-
-    req.on('error', function (e) {
+    req.on("error", function (e) {
         console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error searching for drafts'
+        let result = {
+            statusCode: 500,
+            statusMessage: "Error searching for drafts"
         };
         callback(true, result);
     });
-
     req.end();
 };
 
@@ -290,44 +351,59 @@ B2ShareClient.prototype.searchDrafts = function (callback) {
  * @param callback
  */
 B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
-    recordID = querystring.escape(recordID);
-    var params = {
-        host: this.host,
-        path: '/api/records/' +  recordID + '?access_token=' + this.access_token,
-        method: 'GET'
+    const validInputs = function ()
+    {
+        return isAValidString(recordID, 1);
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-            body += chunk;
+    if(validInputs() === true)
+    {
+        recordID = querystring.escape(recordID);
+        const params = {
+            host: this.host,
+            path: "/api/records/" +  recordID + "?access_token=" + this.accessToken,
+            method: "GET"
+        };
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
+
+            response.on("end", function () {
+                let result = {
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
         });
 
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                statusCode: 500,
+                statusMessage: "Error getting specific record"
             };
-            if(response.statusCode === 200)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
-            }
-            callback(hasError, result);
+            callback(true, result);
         });
-    });
 
-    req.on('error', function (e) {
-        console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error getting specific record'
+        req.end();
+    }
+    else
+    {
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid recordID"
         };
         callback(true, result);
-    });
-
-    req.end();
+    }
 };
 
 /**
@@ -336,100 +412,177 @@ B2ShareClient.prototype.getSpecificRecord = function(recordID, callback) {
  * @param callback
  */
 B2ShareClient.prototype.createADraftRecord = function(data, callback) {
-    var params = {
-        host: this.host,
-        path: '/api/records/?access_token=' + this.access_token,
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+    const validInputs = function ()
+    {
+        if(data === null || data === undefined || data instanceof Array || typeof data !== "object")
+        {
+            return false;
+        }
+        else
+        {
+            try
+            {
+                let dataAsAString = JSON.stringify(data);
+                let dataAsObject = JSON.parse(dataAsAString);
+                return true;
+            }
+            catch(error)
+            {
+                //Invalid 'data' JSON object
+                return false;
+            }
         }
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-            body += chunk;
-        });
-
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
-            };
-            if(response.statusCode === 201)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
+    if(validInputs() === true)
+    {
+        const params = {
+            host: this.host,
+            path: "/api/records/?access_token=" + this.accessToken,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
-            callback(hasError, result);
-        });
-    });
+        };
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
 
-    req.on('error', function (e) {
-        console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error creating a draft record'
+            response.on("end", function () {
+                let result = {
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
+                };
+                if(response.statusCode === 201)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
+        });
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                statusCode: 500,
+                statusMessage: "Error creating a draft record"
+            };
+            callback(true, result);
+        });
+        req.write(JSON.stringify(data));
+        req.end();
+    }
+    else
+    {
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid 'data' JSON object"
         };
         callback(true, result);
-    });
-
-    req.write(JSON.stringify(data));
-    req.end();
+    }
 };
+
 
 /**
  * Uploads a file into a draft record
- * @param info a json object with info(bucketID and the fileName with its extension) about the file eg: {"bucketID":'547485748754854875fgf', "fileNameWithExt": "testFile.txt"}
- * @param buffer the buffer with the file contents
+ * @param info a json object with info(bucketID and the absolute file path) about the file eg: {"fileBucketID":"547485748754854875fgf", "absFilePath": "/Users/np/Desktop/docs/thisIsATxtFile.txt"}
  * @param callback
  */
-B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callback) {
-    var fileBucketID = querystring.escape(info.fileBucketID);
-    var fileNameWithExt = querystring.escape(info.fileNameWithExt);
-    var params = {
-        host: this.host,
-        path: '/api/files/' + fileBucketID + '/' + fileNameWithExt + '?access_token=' + this.access_token,
-        headers: {
-            'Content-Type': 'application/octet-stream'
-        },
-        method: 'PUT'
+B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, callback) {
+
+    const validInputs = function ()
+    {
+        try
+        {
+            let infoAsAString = JSON.stringify(info);
+            let infoAsObject = JSON.parse(infoAsAString);
+            if(!infoAsObject.hasOwnProperty("fileBucketID") || !isAValidString(infoAsObject.fileBucketID, 1))
+            {
+                //Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields
+                return false;
+            }
+            else if(!infoAsObject.hasOwnProperty("absFilePath") || !isAValidString(infoAsObject.absFilePath, 1))
+            {
+                //Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        catch(error)
+        {
+            //Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields
+            return false;
+        }
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-            body += chunk;
-        });
-
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+    if(validInputs() === true)
+    {
+        const fileBucketID = querystring.escape(info.fileBucketID);
+        const absFilePath = info.absFilePath;
+        if (!fs.existsSync(absFilePath)) {
+            let result = {
+                statusCode: 400,
+                statusMessage: "Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields"
             };
-            if(response.statusCode === 200)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
-            }
-            callback(hasError, result);
-        });
-    });
+            return callback(true, result);
+        }
+        const fileNameWithExt = querystring.escape(path.basename(absFilePath));
+        const params = {
+            host: this.host,
+            path: "/api/files/" + fileBucketID + "/" + fileNameWithExt + "?access_token=" + this.accessToken,
+            headers: {
+                "Content-Type": "application/octet-stream"
+            },
+            method: "PUT"
+        };
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
 
-    req.on('error', function (e) {
-        console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error uploadind a file to a draft record'
+            response.on("end", function () {
+                let result = {
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = null;
+                }
+                callback(hasError, result);
+            });
+        });
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                statusCode: 500,
+                statusMessage: "Error uploading a file to a draft record"
+            };
+            callback(true, result);
+        });
+        req.on("end", function (e) {
+            //Request was completed!!
+        });
+        fs.createReadStream(absFilePath).pipe(req);
+    }
+    else
+    {
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields"
         };
         callback(true, result);
-    });
-
-    req.write(buffer);
-    req.end();
+    }
 };
 
 /**
@@ -438,96 +591,149 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, buffer, callb
  * @param callback
  */
 B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callback) {
-    fileBucketID = querystring.escape(fileBucketID);
-    var params = {
-        host: this.host,
-        path: '/api/files/' +  fileBucketID + '?access_token=' + this.access_token,
-        method: 'GET'
+    const validInputs = function ()
+    {
+        return isAValidString(fileBucketID, 1);
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-            body += chunk;
+    if(validInputs() === true)
+    {
+        fileBucketID = querystring.escape(fileBucketID);
+        const params = {
+            host: this.host,
+            path: "/api/files/" +  fileBucketID + "?access_token=" + this.accessToken,
+            method: "GET"
+        };
+
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
+
+            response.on("end", function () {
+                let result = {
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
         });
 
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                statusCode: 500,
+                statusMessage: "Error listing uploaded files for a record"
             };
-            if(response.statusCode === 200)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
-            }
-            callback(hasError, result);
+            callback(true, result);
         });
-    });
 
-    req.on('error', function (e) {
-        console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error listing uploaded files for a record'
+        req.end();
+    }
+    else
+    {
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid fileBucketID"
         };
         callback(true, result);
-    });
-
-    req.end();
+    }
 };
 
 /**
  * Updates a draft record metadata
  * @param recordID the record id of the draft
- * @param jsonPatchFormatData the content of the update, follows the json patch format ex: { "op": "replace", "path": "/titles/0/title", "value": "FINAL" }
+ * @param jsonPatchFormatData the content of the update, follows the json patch format ex: [{ "op": "replace", "path": "/titles/0/title", "value": "FINAL" }]
  * @param callback
  */
 B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatchFormatData, callback) {
-    recordID = querystring.escape(recordID);
-    var params = {
-        host: this.host,
-        path: '/api/records/' +  recordID + '/draft?access_token=' + this.access_token,
-        headers: {
-            'content-type': 'application/json-patch+json'
-        },
-        json: true,
-        method: 'PATCH'
+    const validInputs = function ()
+    {
+        if(!isAValidString(recordID, 1))
+        {
+            return false;
+        }
+        else if(jsonPatchFormatData === null || jsonPatchFormatData === undefined || !(jsonPatchFormatData instanceof Array))
+        {
+            return false;
+        }
+        else
+        {
+            try
+            {
+                let jsonPatchFormatDataAsAString = JSON.stringify(jsonPatchFormatData);
+                let jsonPatchFormatDataAsObject = JSON.parse(jsonPatchFormatDataAsAString);
+                return true;
+            }
+            catch(error)
+            {
+                //Invalid 'jsonPatchFormatData' JSON object
+                return false;
+            }
+        }
     };
 
-    var body = '';
-    var hasError = true;
-    var req = https.request(params, function (response) {
-        response.on('data', function (chunk) {
-            body += chunk;
+    if(validInputs() === true)
+    {
+        recordID = querystring.escape(recordID);
+        const params = {
+            host: this.host,
+            path: "/api/records/" +  recordID + "/draft?access_token=" + this.accessToken,
+            headers: {
+                "content-type": "application/json-patch+json"
+            },
+            json: true,
+            method: "PATCH"
+        };
+
+        let body = "";
+        let hasError = true;
+        let req = https.request(params, function (response) {
+            response.on("data", function (chunk) {
+                body += chunk;
+            });
+
+            response.on("end", function () {
+                let result = {
+                    statusCode: response.statusCode,
+                    statusMessage: response.statusMessage
+                };
+                if(response.statusCode === 200)
+                {
+                    result.data = JSON.parse(body);
+                    hasError = false;
+                }
+                callback(hasError, result);
+            });
         });
 
-        response.on('end', function () {
-            var result = {
-                "statusCode": response.statusCode,
-                "statusMessage": response.statusMessage
+        req.on("error", function (e) {
+            console.log(e);
+            let result = {
+                statusCode: 500,
+                statusMessage: "Error updating a draft metadata"
             };
-            if(response.statusCode === 200)
-            {
-                result.data = JSON.parse(body);
-                hasError = false;
-            }
-            callback(hasError, result);
+            callback(true, result);
         });
-    });
 
-    req.on('error', function (e) {
-        console.log(e);
-        var result = {
-            "statusCode": '500',
-            "statusMessage": 'Error updating a draft metadata'
+        req.write(JSON.stringify(jsonPatchFormatData));
+        req.end();
+    }
+    else
+    {
+        let result = {
+            statusCode: 400,
+            statusMessage: "Must supply a valid recordID and jsonPatchFormatData"
         };
         callback(true, result);
-    });
-
-    req.write(JSON.stringify(jsonPatchFormatData));
-    req.end();
+    }
 };
 
 /**
@@ -536,11 +742,26 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
  * @param callback
  */
 B2ShareClient.prototype.submitDraftRecordForPublication= function (recordID, callback) {
-    var jsonPatchFormatData = [{"op": "add", "path":"/publication_state", "value": "submitted"}];
-    this.updateDraftRecordMetadata(recordID, jsonPatchFormatData, function (error, body) {
-       callback(error, body);
-    });
+    const validInputs = function ()
+    {
+        return isAValidString(recordID, 1);
+    };
+
+    if(validInputs() === true)
+    {
+        const jsonPatchFormatData = [{"op": "add", "path":"/publication_state", "value": "submitted"}];
+        this.updateDraftRecordMetadata(recordID, jsonPatchFormatData, function (error, body) {
+            callback(error, body);
+        });
+    }
+    else
+    {
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid recordID"
+        };
+        callback(true, result);
+    }
 };
 
 module.exports = B2ShareClient;
-
