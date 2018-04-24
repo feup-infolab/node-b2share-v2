@@ -527,7 +527,11 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, callback) {
         const fileBucketID = querystring.escape(info.fileBucketID);
         const absFilePath = info.absFilePath;
         if (!fs.existsSync(absFilePath)) {
-            return callback(true, "File to upload to B2SHARE does not exist: " + absFilePath);
+            let result = {
+                statusCode: 400,
+                statusMessage: "Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields"
+            };
+            return callback(true, result);
         }
         const fileNameWithExt = querystring.escape(path.basename(absFilePath));
         const params = {
@@ -573,7 +577,11 @@ B2ShareClient.prototype.uploadFileIntoDraftRecord = function(info, callback) {
     }
     else
     {
-        callback(true, "Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields");
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid 'info' JSON object, must contain 'fileBucketID' and 'absFilePath' fields"
+        };
+        callback(true, result);
     }
 };
 
@@ -631,7 +639,11 @@ B2ShareClient.prototype.listUploadedFilesInRecord = function(fileBucketID, callb
     }
     else
     {
-        callback(true, "Invalid fileBucketID");
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid fileBucketID"
+        };
+        callback(true, result);
     }
 };
 
@@ -648,7 +660,7 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
         {
             return false;
         }
-        else if(jsonPatchFormatData === null || jsonPatchFormatData === undefined || !jsonPatchFormatData instanceof Array)
+        else if(jsonPatchFormatData === null || jsonPatchFormatData === undefined || !(jsonPatchFormatData instanceof Array))
         {
             return false;
         }
@@ -716,7 +728,11 @@ B2ShareClient.prototype.updateDraftRecordMetadata = function (recordID, jsonPatc
     }
     else
     {
-        callback(true, "Must supply a valid recordID and jsonPatchFormatData");
+        let result = {
+            statusCode: 400,
+            statusMessage: "Must supply a valid recordID and jsonPatchFormatData"
+        };
+        callback(true, result);
     }
 };
 
@@ -740,7 +756,11 @@ B2ShareClient.prototype.submitDraftRecordForPublication= function (recordID, cal
     }
     else
     {
-        callback(true, "Invalid recordID");
+        let result = {
+            statusCode: 400,
+            statusMessage: "Invalid recordID"
+        };
+        callback(true, result);
     }
 };
 
